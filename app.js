@@ -4,8 +4,8 @@ const express = require('express');
 const path = require("path");
 const { query } = require('express-validator');
 
-//const app = express();
-//const port = 3000;
+const app = express();
+const port = 3000;
 
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({ extended: false }));
