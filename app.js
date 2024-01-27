@@ -10,7 +10,7 @@ const port = 3000;
 app.use(express.static(__dirname + '/public'))
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// GET
+// GET // TEST
 // ROOT of your Web app page
 app.get('/', function(req, res){
     res.sendFile(path.join(__dirname,'./public/register-user.html'));
