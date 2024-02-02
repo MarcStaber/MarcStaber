@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="stylesheet_projekt_Stubits test - Kopie.css">
+  <link rel="stylesheet" href="dist/calendar.js.css" />
+  <script src="dist/calendar.js"></script>
+  <script src="https://kit.fontawesome.com/24eb8f8898.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+  <header class="mainHeader" id="Start">
+    <img src="Logo.PNG" alt="Hier sollte ein Logo Stehen">
+    <flexitem></flexitem>
+    <div class="mainHeader1">
+      <h1>Reservierungssystem für Vereine</h1>
+      <p> Platzhalter für Vereinsname </p>
+    </div>
+    <flexitem>
+      <i class="fa-sharp fa-solid fa-user"></i>
+      <p>Max Mustermann</p>
+    </flexitem>
+    <img src="Logo.PNG" alt="Hier sollte ein Logo Stehen">
+    
+  </header>
+
+  <nav class="topnav" id="Top">
+    <a href="#Start">Account</a>
+    <a href="#Angebote">Reservierung</a>
+    <a href="#Fragen">Kontakt</a>
+
+  </nav>
+
+  <section class="mainPart" id="Login">
+
+    <div id="calendar"></div>
+    <script> 
+      var calendarInstance1 = new calendarJs( "calendar", {
+        manualEditingEnabled: true,
+        showExtraTitleBarButtons: false,
+        views: {
+          fullMonth: {
+              maximumEventsPerDayDisplay: 0
+          }
+        },
+      visibleDays: [ 0, 1, 2, 3, 4 ]
+        // All your options can be set here
+        
+      } );
+    </script>
+  </section>
+
+
+ 
