@@ -1,5 +1,5 @@
 # ReservationSystem
-This is a Reservationsystem for courts.
+This is a Reservationsystem for courts. --> Wer das liest ist doof! ;)
 
 
 files/
@@ -13,5 +13,5 @@ files/
 
   backend/
         fist.page.backend/
-            xxxx
+            xx
         
