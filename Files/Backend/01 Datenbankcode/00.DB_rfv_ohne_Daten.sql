@@ -110,7 +110,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `telephone_number` varchar(50) DEFAULT NULL COMMENT 'Telefonnummer',
   `role_id` int(11) DEFAULT NULL COMMENT 'RollenID',
   `street` varchar(100) DEFAULT NULL COMMENT 'Straße',
-  `house number` varchar(10) DEFAULT NULL COMMENT 'Hausnummer',
+  `house_number` varchar(10) DEFAULT NULL COMMENT 'Hausnummer',
   `zip_code` int(8) DEFAULT NULL COMMENT 'Postleitzahl',
   `town` varchar(100) DEFAULT NULL COMMENT 'Ort',
   `country` varchar(100) DEFAULT NULL COMMENT 'Land',
