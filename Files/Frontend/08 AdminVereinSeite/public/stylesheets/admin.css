@@ -1,0 +1,51 @@
+
+* {
+    box-sizing: border-box;
+}
+
+.column {
+    float: left;
+    width: 10%;
+    padding: 0px;
+}
+
+.columnText {
+    float: left;
+    text-align: center;
+    width: 79.5%;
+}
+
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #8eb967;
+}
+
+.row {
+    background-color: royalblue;
+}
+/*padding left value handle vertical space and right value handle horizontal value*/
+.topnav a {
+    float: left;
+    color: #4863a2;
+    text-align: center;
+    padding: 15px 13.5%;
+    text-decoration: none;
+    font-size: 17px;
+    background-color: #8eb967;
+}
+
+.topnav a:hover {
+    background-color: #64991c;
+    color: #4863a2;
+}
+
+.topnav a.active {
+    background-color: #64991c;
+    color: #4863a2;
+}
