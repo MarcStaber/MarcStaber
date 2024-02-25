@@ -21,7 +21,7 @@ USE `rfv`;
 
 -- Exportiere Struktur von Tabelle rfv.address_lookup
 CREATE TABLE IF NOT EXISTS `address_lookup` (
-  `ID` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'primary key',
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT 'primary key',
   `street` varchar(100) NOT NULL COMMENT 'Straße',
   `zip_code` int(8) NOT NULL COMMENT 'Postleitzahl',
   `city` varchar(100) NOT NULL COMMENT 'Ort',
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `court_reservation` (
   `user_id` int(11) NOT NULL COMMENT 'BenutzerID',
   `reservation_type_id` int(11) NOT NULL COMMENT 'ReservierungsartID',
   `notice` varchar(2000) NOT NULL COMMENT 'Bemerkung',
-  `cancele_datetime` datetime DEFAULT NULL COMMENT 'Storniert als Datum und Zeit',
+  `cancel_datetime` datetime DEFAULT NULL COMMENT 'Storniert als Datum und Zeit',
   PRIMARY KEY (`court_id`,`date_time_from`,`date_time_to`,`reservation_number`),
   KEY `FK_court_reservation_reservation_type` (`reservation_type_id`),
   KEY `FK_court_reservation_user` (`user_id`),
