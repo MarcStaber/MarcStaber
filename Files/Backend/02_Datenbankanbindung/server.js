@@ -10,6 +10,7 @@ app.use(express.json());    // parse json bodies in the request object
 // Routen bzw. Redirects 
 app.use("/user", require("./routes/userRoutes"));
 app.use("/court", require("./routes/courtRoutes"));
+app.use("/role", require("./routes/roleRoutes"));
 
 
 // set the view engine to ejs
