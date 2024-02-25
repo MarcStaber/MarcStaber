@@ -11,12 +11,16 @@ app.use(express.json());    // parse json bodies in the request object
 app.use("/user", require("./routes/userRoutes"));
 app.use("/court", require("./routes/courtRoutes"));
 app.use("/role", require("./routes/roleRoutes"));
-
+app.use("/reservation_type", require("./routes/reservationTypeRoutes"));
+app.use("/court_reservation", require("./routes/courtReservationRoutes"));
+app.use("/club_data", require("./routes/clubDataRoutes"));
+app.use("/address_lookup", require("./routes/addressLookupRoutes"));
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 
 // use res.render to load up an ejs view file
+
 
 // index page
 app.get('/', function(req, res) {
