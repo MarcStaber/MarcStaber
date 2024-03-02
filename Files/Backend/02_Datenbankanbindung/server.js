@@ -6,7 +6,16 @@ const app = express();
 // Middleware
 app.use(express.json());    // parse json bodies in the request object
 
+// Routen bzw. Redirects
+app.use("/data/user", require("./routes/userRoutes"));
+app.use("/data/court", require("./routes/courtRoutes"));
+app.use("/data/role", require("./routes/roleRoutes"));
+app.use("/data/reservation_type", require("./routes/reservationTypeRoutes"));
+app.use("/data/court_reservation", require("./routes/courtReservationRoutes"));
+app.use("/data/club_data", require("./routes/clubDataRoutes"));
+app.use("/data/address_lookup", require("./routes/addressLookupRoutes"));
 
+/*
 // Routen bzw. Redirects 
 app.use("/user", require("./routes/userRoutes"));
 app.use("/court", require("./routes/courtRoutes"));
@@ -15,6 +24,7 @@ app.use("/reservation_type", require("./routes/reservationTypeRoutes"));
 app.use("/court_reservation", require("./routes/courtReservationRoutes"));
 app.use("/club_data", require("./routes/clubDataRoutes"));
 app.use("/address_lookup", require("./routes/addressLookupRoutes"));
+*/
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
