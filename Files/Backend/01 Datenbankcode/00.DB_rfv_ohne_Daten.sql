@@ -34,11 +34,16 @@ DELETE FROM `address_lookup`;
 
 -- Exportiere Struktur von Tabelle rfv.club_data
 CREATE TABLE IF NOT EXISTS `club_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID - primary key',
-  `significance` varchar(100) NOT NULL COMMENT 'Bedeutung',
-  `characteristic` varchar(100) NOT NULL COMMENT 'Ausprägung',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Vereinsdaten';
+  `club_data_id` int(11) NOT NULL AUTO_INCREMENT, 
+  `club_main_title_type` varchar(100) NULL, 
+  `club_paragraph1_title_type` varchar(100) NULL, 
+  `club_address` varchar(100) NULL,
+  `club_email` varchar(100) NULL,
+  `club_phonenumber` varchar(50) NULL,
+  `club_courts` int(11) NULL,
+  PRIMARY KEY (`club_data_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;  
+ COMMENT='Vereinsdaten';
 
 -- Exportiere Daten aus Tabelle rfv.club_data: ~0 rows (ungefähr)
 DELETE FROM `club_data`;
