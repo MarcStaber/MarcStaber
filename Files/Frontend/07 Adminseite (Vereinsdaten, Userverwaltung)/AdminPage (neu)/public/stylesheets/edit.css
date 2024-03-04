@@ -1,0 +1,60 @@
+/* Add this CSS for Edit User page */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    color: #8eb967;
+    text-align: center;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+form {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #4863a2;
+    border-radius: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4863a2;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #8eb967;
+    color: #4863a2;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #64991c;
+}
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #4863a2;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
