@@ -6,7 +6,7 @@ exports.getAllCourtReservations = async (req, res, next) => {
         let query = "SELECT * FROM court_reservation";
         const result = await db.pool.query(query);
 
-        res.status(200).json({ result });
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -19,7 +19,7 @@ exports.getCourtReservationById = async (req, res, next) => {
         let query = `SELECT * FROM court_reservation 
                      WHERE reservation_number = ${id};`;
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -44,7 +44,7 @@ OR
     (${date_time_from} <= date_time_to AND ${date_time_to} >= date_time_to)
 )`;
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -85,7 +85,15 @@ exports.addCourtReservation = async (req, res, next) => {
             notice: req.body.notice,
             cancel_datetime: req.body.cancel_datetime
         };
-        res.status(200).json(newCourtReservation);
+        res.status(200).json({data: newCourtReservation, 
+            message: `New Court Reservation "${newReservationType.user_id}
+            " and court_id "${newReservationType.court_id}
+            " and date_time_from "${newReservationType.date_time_from}
+            " and date_time_to "${newReservationType.date_time_to}
+            " and reservation_type_id "${newReservationType.reservation_type_id}
+            " and notice "${newReservationType.notice}
+            " and cancel_datetime "${newReservationType.cancel_datetime}
+            " added`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -116,7 +124,7 @@ exports.updateCourtReservationById = async (req, res, next) => {
             WHERE reservation_number = ${id};
         `;
         await db.pool.query(query);
-        res.status(200).json(`Court reservation ${id} updated`);
+        res.status(200).json({message: `Court reservation ${id} updated`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -129,7 +137,7 @@ exports.deleteCourtReservationById = async (req, res, next) => {
         let query = `DELETE FROM court_reservation 
                      WHERE reservation_number = ${id};`;
         await db.pool.query(query);
-        res.status(200).send(`Court reservation ${id} deleted`);
+        res.status(200).send({message:`Court reservation ${id} deleted`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -180,7 +188,7 @@ AND week_of_year = ${week_of_year}
 )`;
         
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);

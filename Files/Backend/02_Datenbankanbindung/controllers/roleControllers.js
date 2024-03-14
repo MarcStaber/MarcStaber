@@ -4,10 +4,13 @@ const db = require('../config/database');
 
 exports.getAllRoles = async (req, res, next) => {
     try {
-        let query = "SELECT * FROM role";
+        let query = `
+            SELECT * 
+            FROM role
+        `;
         const result = await db.pool.query(query);
 
-        res.status(200).json({ result });
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -17,9 +20,13 @@ exports.getAllRoles = async (req, res, next) => {
 exports.getRoleById = async (req, res, next) => {
     try {
         const id = req.params.id;
-        let query = `SELECT * FROM role WHERE role_id = ${id};`;
+        let query = `
+            SELECT * 
+            FROM role 
+            WHERE role_id = ${id}
+        `;
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -28,7 +35,7 @@ exports.getRoleById = async (req, res, next) => {
 
 function maskStringValue(val){
     if (val != null){
-        return "'" + val + "'";
+        return `"${val}"`;
     }
     return val;
 }
@@ -44,7 +51,7 @@ exports.addRole = async (req, res, next) => {
             ) 
             VALUES (
                 ${role}
-            );
+            )
         `;
         const result = await db.pool.query(query);
         const new_id = Number(result.insertId);
@@ -53,7 +60,7 @@ exports.addRole = async (req, res, next) => {
             role_id: new_id,
             role: req.body.role
         };
-        res.status(200).json(newRole);
+        res.status(200).json({data: newRole, message: `New role "${newRole.role}" added`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -68,10 +75,10 @@ exports.updateRoleById = async (req, res, next) => {
         let query = `
             UPDATE role 
             SET role = ${role}
-            WHERE role_id = ${id};
+            WHERE role_id = ${id}
         `;
         await db.pool.query(query);
-        res.status(200).json(`Role ${id} updated`);
+        res.status(200).json({message: `Role ${id} updated`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -81,9 +88,12 @@ exports.updateRoleById = async (req, res, next) => {
 exports.deleteRoleById = async (req, res, next) => {
     try {
         const id = req.params.id;
-        let query = `DELETE FROM role WHERE role_id = ${id};`;
+        let query = `
+            DELETE FROM role 
+            WHERE role_id = ${id}
+        `;
         await db.pool.query(query);
-        res.status(200).send(`Role ${id} deleted`);
+        res.status(200).json({message: `Role ${id} deleted`});
     } catch (error) {
         console.log(error);
         next(error);

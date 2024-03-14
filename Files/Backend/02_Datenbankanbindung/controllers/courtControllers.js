@@ -1,4 +1,3 @@
-//const User = require("../models/user");
 const db = require('../config/database');
 
 
@@ -7,7 +6,7 @@ exports.getAllCourts = async (req, res, next) => {
         let query = "SELECT * FROM court";
         const result = await db.pool.query(query);
 
-        res.status(200).json({ result });
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -19,7 +18,8 @@ exports.getCourtById = async (req, res, next) => {
         const id = req.params.id;
         let query = `SELECT * FROM court WHERE court_id = ${id};`;
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        // result is a list with only one element
+        res.status(200).json({ data: result[0] });
     } catch (error) {
         console.log(error);
         next(error);
@@ -53,7 +53,7 @@ exports.addCourt = async (req, res, next) => {
             court_id: new_id,
             court: req.body.court
         };
-        res.status(200).json(newCourt);
+        res.status(200).json({ data: newCourt, message: "New court inserted" });
     } catch (error) {
         console.log(error);
         next(error);
@@ -71,7 +71,12 @@ exports.updateCourtById = async (req, res, next) => {
             WHERE court_id = ${id};
         `;
         await db.pool.query(query);
-        res.status(200).json(`Court ${id} updated`);
+
+        const c = {
+            court_id: id,
+            court: court
+        };
+        res.status(200).json({data: c, message: `Court ${id} updated`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -83,7 +88,7 @@ exports.deleteCourtById = async (req, res, next) => {
         const id = req.params.id;
         let query = `DELETE FROM court WHERE court_id = ${id};`;
         await db.pool.query(query);
-        res.status(200).send(`Court ${id} deleted`);
+        res.status(200).json({message: `Court ${id} deleted`});
     } catch (error) {
         console.log(error);
         next(error);

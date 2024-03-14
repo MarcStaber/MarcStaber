@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 const db = require('../config/database');
 
 
@@ -7,7 +7,7 @@ exports.getAllUsers = async (req, res, next) => {
         let query = "SELECT * FROM user";
         const result = await db.pool.query(query);
 
-        res.status(200).json({ result });
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -19,20 +19,12 @@ exports.getUserById = async (req, res, next) => {
         const id = req.params.id;
         let query = `SELECT * FROM user WHERE user_id = ${id};`;
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        res.status(200).json({ data: result[0] });
     } catch (error) {
         console.log(error);
         next(error);
     }    
 };
-
-function maskStringValue(val){
-    if (val != null){
-        return "'" + val + "'";
-    }
-    return val;
-}
-
 
 exports.addUser = async (req, res, next) => {
     try {
@@ -43,13 +35,13 @@ exports.addUser = async (req, res, next) => {
         const last_name = maskStringValue(req.body.last_name);
         const password = maskStringValue(req.body.password);
         const count_of_false_logins = maskStringValue(req.body.count_of_false_logins);
-        const blocked_date = maskStringValue(req.body.blocked_date);
-        const member_date = maskStringValue(req.body.member_date);
+        const blocked_date = maskDateTimeValue(req.body.blocked_date);
+        const member_date = maskDateTimeValue(req.body.member_date);
         const telephone_number = maskStringValue(req.body.telephone_number);
         const role_id = maskStringValue(req.body.role_id);
         const street = maskStringValue(req.body.street);
         const house_number = maskStringValue(req.body.house_number);
-        const zip_code = maskStringValue(req.body.zip_code);
+        const zip_code = maskIntegerValue(req.body.zip_code);
         const city = maskStringValue(req.body.city);
         const country = maskStringValue(req.body.country);
 
@@ -65,6 +57,8 @@ exports.addUser = async (req, res, next) => {
                 ${house_number}, ${zip_code}, ${city}, ${country}
             );
         `;
+        console.log(query);
+
         const result = await db.pool.query(query);
         const new_id = Number(result.insertId);
         //console.log(result);
@@ -109,7 +103,7 @@ exports.addUser = async (req, res, next) => {
             city: req.body.city,
             country: req.body.country
         };
-        res.status(200).json(newUser);
+        res.status(200).json({ data:newUser, message: `New user added` });
     } catch (error) {
         console.log(error);
         next(error);
@@ -125,16 +119,15 @@ exports.updateUserById = async (req, res, next) => {
         const last_name = maskStringValue(req.body.last_name);
         const password = maskStringValue(req.body.password);
         const count_of_false_logins = maskStringValue(req.body.count_of_false_logins);
-        const blocked_date = maskStringValue(req.body.blocked_date);
-        const member_date = maskStringValue(req.body.member_date);
+        const blocked_date = maskDateTimeValue(req.body.blocked_date);
+        const member_date = maskDateTimeValue(req.body.member_date);
         const telephone_number = maskStringValue(req.body.telephone_number);
-        const role_id = maskStringValue(req.body.role_id);
+        const role_id = maskIntegerValue(req.body.role_id);
         const street = maskStringValue(req.body.street);
         const house_number = maskStringValue(req.body.house_number);
-        const zip_code = maskStringValue(req.body.zip_code);
+        const zip_code = maskIntegerValue(req.body.zip_code);
         const city = maskStringValue(req.body.city);
         const country = maskStringValue(req.body.country);
-
 
         let query = `
             UPDATE user SET
@@ -154,8 +147,11 @@ exports.updateUserById = async (req, res, next) => {
                 country = ${country}
             WHERE user_id = ${id};
         `;
+
+        console.log(query);
+
         await db.pool.query(query);
-        res.status(200).json(`User ${id} updated`);
+        res.status(200).json({ message:`User ${id} updated` });
     } catch (error) {
         console.log(error);
         next(error);
@@ -167,10 +163,38 @@ exports.deleteUserById = async (req, res, next) => {
         const id = req.params.id;
         let query = `DELETE FROM user WHERE user_id = ${id};`;
         await db.pool.query(query);
-        res.status(200).send(`User ${id} deleted`);
+        res.status(200).json({ message:`User ${id} deleted` });
     } catch (error) {
         console.log(error);
         next(error);
     }
 }
 
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+//                         H E L P E R   F U N C T I O N S
+//////////////////////////////////////////////////////////////////////////////////////////
+function maskStringValue(val) {
+    if (val != null) {
+        return `'${val}'`;
+    }
+    return val;
+}
+
+
+// Link: https://mariadb.com/kb/en/str_to_date/#:~:text=STR_TO_DATE()%20returns%20a%20DATETIME,the%20format%20indicated%20by%20format.
+function maskDateTimeValue(val) {
+    if (val != null && val != "") {
+        return `STR_TO_DATE('${val}', '%Y-%m-%d %T')`;
+        //return `STR_TO_DATE('${val}', '%d.%m.%Y %H:%i')`;
+    }
+    return null;
+}
+
+function maskIntegerValue(val) {
+    if (val != null && val != "") {
+        return val;
+    }
+    return null;
+}

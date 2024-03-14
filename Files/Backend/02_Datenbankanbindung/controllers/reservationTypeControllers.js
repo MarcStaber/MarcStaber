@@ -7,7 +7,7 @@ exports.getAllReservationTypes = async (req, res, next) => {
         let query = "SELECT * FROM reservation_type";
         const result = await db.pool.query(query);
 
-        res.status(200).json({ result });
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -19,7 +19,7 @@ exports.getReservationTypeById = async (req, res, next) => {
         const id = req.params.id;
         let query = `SELECT * FROM reservation_type WHERE reservation_type_id = ${id};`;
         const result = await db.pool.query(query);
-        res.status(200).json(result);
+        res.status(200).json({ data: result });
     } catch (error) {
         console.log(error);
         next(error);
@@ -55,7 +55,7 @@ exports.addReservationType = async (req, res, next) => {
             reservation_type: req.body.reservation_type,
             admin_rights: req.body.admin_rights
         };
-        res.status(200).json(newReservationType);
+        res.status(200).json({data: newReservationType, message: `New Reservation Type "${newReservationType.reservation_type}" and Admin rights "${newReservationType.admin_rights}" added`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -75,7 +75,7 @@ exports.updateReservationTypeById = async (req, res, next) => {
             WHERE reservation_type_id = ${id};
         `;
         await db.pool.query(query);
-        res.status(200).json(`Reservation type ${id} updated`);
+        res.status(200).json({message: `Reservation type ${id} updated`});
     } catch (error) {
         console.log(error);
         next(error);
@@ -87,7 +87,7 @@ exports.deleteReservationTypeById = async (req, res, next) => {
         const id = req.params.id;
         let query = `DELETE FROM reservation_type WHERE reservation_type_id = ${id};`;
         await db.pool.query(query);
-        res.status(200).send(`Reservation type ${id} deleted`);
+        res.status(200).send({message: `Reservation type ${id} delete`});
     } catch (error) {
         console.log(error);
         next(error);
