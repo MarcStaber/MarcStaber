@@ -1,172 +1,146 @@
-class court {
-    constructor(court) {
-        this.court = court;
+const db = require('../config/database');
+
+class Court {
+
+    /////////////////////////////////////////////////////////////////////////////////
+    // private class member variables
+    /////////////////////////////////////////////////////////////////////////////////
+    #court_id;
+    #court;
+
+    /////////////////////////////////////////////////////////////////////////////////
+    // constructor
+    /////////////////////////////////////////////////////////////////////////////////
+    constructor(court_id, court) {
+        this.#court_id = court_id;
+        this.#court = court;
     }
 
     /////////////////////////////////////////////////////////////////////////////////
     // getter und setter
-    // über die Weihnachten geschriebene wurden reinkopiert 
-    // nicht geteste
     /////////////////////////////////////////////////////////////////////////////////
     get court_id() {
-        return this._court_id;
+        return this.#court_id;
     }
+
     set court_id(court_id) {
-        this._court_id = court_id;
+        this.#court_id = court_id;
     }
+
     get court() {
-        return this._court;
+        return this.#court;
     }
+
     set court(court) {
-        this._court = court;
+        this.#court = court;
     }
 
     /////////////////////////////////////////////////////////////////////////////////
     // to 's
-    // über die Weihnachten geschriebene wurden reinkopiert 
-    // nicht geteste
     /////////////////////////////////////////////////////////////////////////////////
-
     toString() {
-        return this.court;
+        return `Court { court_id: "${this.#court_id}", court: "${this.#court}" }`;
     }
+
     toArray() {
-        return [this.court_id, this.court];
+        return [this.#court_id, this.#court];
     }
+
     toObject() {
         return {
-            court_id: this.court_id,
-            court: this.court
+            court_id: this.#court_id,
+            court: this.#court
         };
     }
+
     toJson() {
         return JSON.stringify(this.toObject());
     }
 
-
     /////////////////////////////////////////////////////////////////////////////////
-    // from 's
-    // über die Weihnachten geschriebene wurden reinkopiert 
-    // nicht geteste
+    // static from 's
     /////////////////////////////////////////////////////////////////////////////////
-    fromJson(json) {
-        return new court(JSON.parse(json));
-    }
-    fromArray(array) {
-        return new court(array);
-    }
-    fromObject(object) {
-        return new court(object);
-    }
-    fromString(string) {
-        return new court(string);
+    static fromJson(json) {
+        return JSON.parse(json);
     }
 
-    /////////////////////////////////////////////////////////////////////////////////
-    // static 's
-    // über die Weihnachten geschriebene wurden reinkopiert 
-    // nicht geteste
-    /////////////////////////////////////////////////////////////////////////////////
 
-    // static fromJson(json) {
-    //     return new court(JSON.parse(json));
-    // }
-    // static fromArray(array) {
-    //     return new court(array);
-    // }
-
-    // static fromObject(object) {
-    //     return new court(object);
-    // }
-    // static fromString(string) {
-    //     return new court(string);
-    // }
 
     /////////////////////////////////////////////////////////////////////////////////
-    // Funktionen
-    // über die Weihnachten geschriebene wurden reinkopiert 
-    // nicht geteste
+    // DB Funktionen
     /////////////////////////////////////////////////////////////////////////////////
 
-    async updateCourt(court) {
+
+    async save() {
+        const id = this.#court_id;
+        const court = maskStringValue(this.#court);
         try {
-            const id = court.court_id;
-            const court = maskStringValue(court.court);
-            let query = `
-                UPDATE court 
-                SET court = ${court}
-                WHERE court_id = ${id};
-            `;
-            await db.pool.query(query);
-            let newCourt = {
-                court_id: id,
-                court: req.body.court
-            };
-            res.status(200).json(newCourt);
-        }
-        catch (error) {
+            if (id == null) {
+                let query = `
+                    INSERT INTO court (court) 
+                    VALUES (${court});
+                `;
+                const result = await db.pool.query(query);
+                const new_id = Number(result.insertId);
+                return new Court(new_id, this.#court);
+            } else {
+                let query = `
+                    UPDATE court 
+                    SET court = ${court}
+                    WHERE court_id = ${id};
+                `;
+                await db.pool.query(query);
+                return new Court(id, this.#court);
+            }
+        } catch (error) {
             console.log(error);
-            next(error);
         }
     }
-    async deleteCourt(id) {
+/*
+    static async findAll() {
+        let array = [];
         try {
-            let query = `
-                DELETE FROM court 
-                WHERE court_id = ${id};
-            `;
-            await db.pool.query(query);
-            res.status(200).send(`Court ${id} deleted`);
-        }
-        catch (error) {
-            console.log(error);
-            next(error);
-        }
-    }
-    async createCourt(court) {
-        try {
-            const court = maskStringValue(court.court);
-            let query = `
-                INSERT INTO court (court) 
-                VALUES (${court});
-            `;
-            await db.pool.query(query);
-            let newCourt = {
-                court_id: (await db.pool.query(`SELECT LAST_INSERT_ID() AS id`))[0].id,
-                court: req.body.court
-            };
-            res.status(200).json(newCourt);
-        }
-        catch (error) {
-            console.log(error);
-            next(error);
-        }
-    }
-
-    async getCourtById(id) {
-        try {
-            let query = `
-                SELECT * FROM court WHERE court_id = ${id};
-            `;
+            let query = `SELECT * FROM court;`;
             const result = await db.pool.query(query);
-            res.status(200).json(result);
-        }
-        catch (error) {
+            // result is a list with only one element
+            result.forEach(element => {
+                console.log(element.court);
+                array.push(new Court(element.court_id, element.court));
+            });
+        } catch (error) {
             console.log(error);
-            next(error);
-        }
+        }    
+        return array;
     }
-    async getAllCourts() {
+*/
+    static async findAll() {
+        let array = [];
         try {
-            let query = `
-                SELECT * FROM court;
-            `;
+            let query = `SELECT * FROM court;`;
             const result = await db.pool.query(query);
-            res.status(200).json(result);
-        }
-        catch (error) {
+            return result;
+        } catch (error) {
             console.log(error);
-            next(error);
-        }
+        }    
+        return array;
     }
+
+    static async find(id) {
+        try {
+            let query = `SELECT * FROM court WHERE court_id = ${id};`;
+            const result = await db.pool.query(query);
+            // result is a list with only one element
+            return new Court(result[0].court_id, result[0].court);
+        } catch (error) {
+            console.log(error);
+        }    
+        return null;
+    }
+
+    static ret( text ) {
+        return text;
+    }
+
 }
+
+module.exports = Court;
