@@ -6,6 +6,8 @@ INSERT INTO role (role_id, role) VALUES (4, 'Gast');
 INSERT INTO role (role_id, role) VALUES (5, 'Neuer Benutzer');
 SELECT * FROM role;
 
+ALTER TABLE user
+MODIFY role_id INTEGER(11) DEFAULT 5; 
 
 
 INSERT INTO court (court_id, court) VALUES (1, 'Platz 1');

@@ -31,14 +31,7 @@ Um dieses Projekt zu laden laden, müssen Sie nur in der Eingabeaufforderung im 
     > npm install
 die vorhandenen Abhängigkeiten (Dependencies) laden.
 
-NPM in VSCode
-=============
-- npm install nodejs
-- npm install express
-- npm install -g express-generator
-- npm install mariadb
-- npm install dotenv
-- npm install ejs
+
 
 2.3 .env Konfigurations-Datei erstellen
 ---------------------------------------
@@ -101,18 +94,12 @@ https://www.youtube.com/watch?v=344Zv2m9TYI
 
 
 
-
-
-
-
-
-
 NPM in VSCode
 =============
 - npm install nodejs
 - npm install express
+- npm install -g express-generator
 - npm install mariadb
 - npm install dotenv
-- npm install nodemon
 - npm install ejs
 
