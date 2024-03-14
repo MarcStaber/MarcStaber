@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="stylesheet_projekt_Stubits test - Kopie.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+</head>
+
+<body>
+
+  <header class="mainHeader" id="Start">
+    <img src="Logo.PNG" alt="Hier sollte ein Logo Stehen">
+   <flexitem></flexitem>
+    <div class="mainHeader1">
+      <h1>Reservierungssystem für Vereine</h1>
+      <p> Platzhalter für Vereinsname </p>
+    </div>
+    <a href="Projekt_LoginSeite.html"><button>Log in</button></a>
+    <img src="Logo.PNG" alt="Hier sollte ein Logo Stehen">
+  </header>
+
+  <h2>Erstelle deinen Gast-Account</h2>
+
+  <section class="mainPart" id="registry">
+
+    <article class="Reservierungsseite_Form">
+      <p>Vorname:</p>
+      <input type="firstName" class="form__registry" placeholder="Vorname" />
+      <p>Nachname:</p>
+      <input type="secondName" class="form__registry" placeholder="Nachname" />
+      <p>Email:</p>
+      <input type="email" class="form__registry" placeholder="Email" />
+      <p>Telefon:</p>
+      <input type="phone" class="form__registry" placeholder="Telefonnummer" />
+      <p>Passwort:</p>
+      <input type="password" class="form__password" placeholder="Passswort" />
+      <p>Passwort bestätigen:</p>
+      <input type="password" class="form__password" placeholder="Passswort bestätigen" />
+      <p></p>
+    </article>
+    <flexitem> </flexitem>;
+    <article class="Reservierungsseite_Form">
+      <p>Land:</p>
+      <input type="country" class="form__registry" placeholder="Land" />
+      <p>Postleitzahl:</p>
+      <input type="plz" class="form__registry" placeholder="PLZ" />
+      <p>Ort:</p>
+      <input type="city" class="form__registry" placeholder="Ort" />
+      <p>Straße:</p>
+      <input type="street" class="form__registry" placeholder="Straße" />
+      <p>Hausnummer:</p>
+      <input type="house_number" class="form__registry" placeholder="Hausnummer" />
+    </article>
+  </section>
+  <section class="Registrierung">
+    <form action="?" method="POST">
+      <div   class="g-recaptcha"
+      data-sitekey="6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+      data-callback="onRecaptchaSuccess"
+      data-expired-callback="onRecaptchaResponseExpiry"
+      data-error-callback="onRecaptchaError"></div>
+      <br/>
+    </form>
+    <a href=""> <button class="btnRegistry" type="button" id="btnRegistry">Registrierung abschließen</button></a>
+    <p>By creating an account you agree with our <a href="url">Terms of Service and Privacy Policy.</a></p>
+  </section>
+</body>
+</html>
+ 

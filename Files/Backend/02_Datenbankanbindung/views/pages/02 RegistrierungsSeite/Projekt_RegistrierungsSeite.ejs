@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="stylesheet_projekt_Stubits test - Kopie.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+</head>
+
+<body>
+
+  <header class="mainHeader" id="Start">
+    <img src="Logo.PNG" alt="Hier sollte ein Logo Stehen">
+   <flexitem></flexitem>
+    <div class="mainHeader1">
+      <h1>Reservierungssystem für Vereine</h1>
+      <p> Platzhalter für Vereinsname </p>
+    </div>
+    <a href="Projekt_LoginSeite.html"><button>Log in</button></a>
+    <img src="Logo.PNG" alt="Hier sollte ein Logo Stehen">
+  </header>
+
+  <h2>Erstelle deinen Gast-Account</h2>
+
+  <section class="mainPart" id="registry">
+
+    <form action="/register" method="post">
+
+      <label for="email_address">E-mail</label>
+      <input type="email" id="email_address" name="email_address" required>
+  
+      <label for="first_name">Vorname</label>
+      <input type="text" id="first_name" name="first_name" required>
+  
+      <label for="last_name">Nachname</label>
+      <input type="text" id="last_name" name="last_name" required>
+  
+      <label for="password">Passwort</label>
+      <input type="password" id="password" name="password" required>
+  
+      <label for="telephone_number">telephone_number</label>
+      <input type="tel" id="telephone_number" name="telephone_number" required>
+  
+      <label for="street">street</label>
+      <input type="tel" id="street" name="street" required>
+  
+      <label for="house_number">house_number</label>
+      <input type="tel" id="house_number" name="house_number" required>
+  
+      <label for="zip_code">zip_code</label>
+      <input type="tel" id="zip_code" name="zip_code" required>
+  
+      <label for="city">city</label>
+      <input type="tel" id="city" name="city" required>
+  
+      <label for="country">country</label>
+      <input type="tel" id="country" name="country" required>
+  
+      <input type="submit" value="Jetzt registrieren">
+  </form>
+  </section>
+  <section class="Registrierung">
+    <form action="?" method="POST">
+      <div   class="g-recaptcha"
+      data-sitekey="6LeIxAcTAAAAAGG-vFI1TnRWxMZNFuojJ4WifJWe"
+      data-callback="onRecaptchaSuccess"
+      data-expired-callback="onRecaptchaResponseExpiry"
+      data-error-callback="onRecaptchaError"></div>
+      <br/>
+    </form>
+    <a href=""> <button class="btnRegistry" type="button" id="btnRegistry">Registrierung abschließen</button></a>
+    <p>By creating an account you agree with our <a href="url">Terms of Service and Privacy Policy.</a></p>
+  </section>
+</body>
+</html>
+ 
