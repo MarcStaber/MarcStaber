@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register User</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/add.css">
+</head>
+
+<body>
+    <form action="/add" method="post">
+        <label for="firstName">Vorname</label>
+        <input type="text" id="first_name" name="first_name" required>
+
+        <label for="lastName">Nachname</label>
+        <input type="text" id="last_name" name="last_name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email_address" name="email_address" required>
+
+        <label for="password">Passwort</label>
+        <input type="password" id="password" name="password" required>
+
+        <label for="confirm_password">Passwort bestätigen</label>
+        <input type="password" id="confirm_password" name="confirm_password" required>
+
+        <label for="phone-number">Telefonnummer</label>
+        <input type="tel" id="telephone_number-number" name="telephone_number" required>
+
+        <label for="street">Adresse</label>
+        <input type="text" id="street" name="street" required>
+
+        <label for="house-number">Hausnummer</label>
+        <input type="text" id="house-number" name="house_number" required>
+
+        <label for="zip-code">Postleitzahl</label>
+        <input type="text" id="zip-code" name="zip_code" required>
+
+        <label for="town">Stadt</label>
+        <input type="text" id="town" name="town" required>
+
+        <label for="country">Land</label>
+        <input type="text" id="country" name="country" required>
+        <input type="submit" value="Registrieren">
+    </form>
+
+    <% if (errorMessage) { %>
+        <p style="color: red;"><%= errorMessage %></p>
+    <% } %>
+
+</body>
+
+</html>
