@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
   <%- include('../partials/head'); %>
 </head>
@@ -9,29 +9,23 @@
     <%- include('../partials/header', {variant: 'compact'}); %>
 </header>
 
-<main>
-  <div class="jumbotron">
-    <h1>This is great</h1>
-    <p>Welcome to templating using EJS</p>
+<h1>Startseite</h1>
 
-    <h2>Variable</h2>
-    <p><%= tagline %></p>
+<h2>Unsere Tennisplätze</h2>
+<ul>
+  <% courts.forEach(function(c) { %>
+    <li>
+      <%= c.court_id %>. <strong><%= c.court %></strong>
+    </li>
+  <% }); %>
+</ul>
 
-    <ul>
-      <% mascots.forEach(function(mascot) { %>
-        <li>
-          <strong><%= mascot.name %></strong>
-          representing <%= mascot.organization %>,
-          born <%= mascot.birth_year %>
-        </li>
-      <% }); %>
-    </ul>
-  </div>
-</main>
 
 <footer>
   <%- include('../partials/footer'); %>
 </footer>
+
+
 
 </body>
 </html>
