@@ -28,11 +28,10 @@ CREATE TABLE IF NOT EXISTS `address_lookup` (
   `zip_code` int(8) NOT NULL COMMENT 'Postleitzahl',
   `city` varchar(100) NOT NULL COMMENT 'Ort',
   `country` varchar(100) NOT NULL COMMENT 'Land',
-  PRIMARY KEY (`ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AdresseLookup';
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='AdresseLookup';
 
 -- Exportiere Daten aus Tabelle rfv.address_lookup: ~0 rows (ungefähr)
-DELETE FROM `address_lookup`;
 
 -- Exportiere Struktur von View rfv.booked_hours
 DROP VIEW IF EXISTS `booked_hours`;
@@ -52,12 +51,19 @@ CREATE TABLE IF NOT EXISTS `club_data` (
   `characteristic` varchar(100) NOT NULL COMMENT 'Ausprägung',
   PRIMARY KEY (`id`),
   UNIQUE KEY `significance` (`significance`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Vereinsdaten';
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Vereinsdaten';
 
--- Exportiere Daten aus Tabelle rfv.club_data: ~1 rows (ungefähr)
-DELETE FROM `club_data`;
+-- Exportiere Daten aus Tabelle rfv.club_data: ~9 rows (ungefähr)
 INSERT INTO `club_data` (`id`, `significance`, `characteristic`) VALUES
-	(1, 'max_reservierungs_stunden', '2');
+	(1, 'Vereinsname', 'TC Neudauberg'),
+	(2, 'Postleitzahl', '7574'),
+	(3, 'Ort', 'Neudauberg'),
+	(4, 'Straße', 'Thermenstraße'),
+	(5, 'Hausnummer', '36'),
+	(6, 'Telefonnummer', '06641251195'),
+	(7, 'E-Mail', 'vorstand@tc-neudauberg.at'),
+	(8, 'Webseite', 'www.tc-neudauberg.at'),
+	(9, 'max_reservierungs_stunden', '2');
 
 -- Exportiere Struktur von Tabelle rfv.court
 DROP TABLE IF EXISTS `court`;
@@ -69,7 +75,6 @@ CREATE TABLE IF NOT EXISTS `court` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Platz';
 
 -- Exportiere Daten aus Tabelle rfv.court: ~2 rows (ungefähr)
-DELETE FROM `court`;
 INSERT INTO `court` (`court_id`, `court`) VALUES
 	(1, 'Platz 1'),
 	(2, 'Platz 2');
@@ -92,10 +97,9 @@ CREATE TABLE IF NOT EXISTS `court_reservation` (
   CONSTRAINT `FK_court_reservation_court` FOREIGN KEY (`court_id`) REFERENCES `court` (`court_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `FK_court_reservation_reservation_type` FOREIGN KEY (`reservation_type_id`) REFERENCES `reservation_type` (`reservation_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_court_reservation_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Platzereservierung';
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Platzereservierung';
 
--- Exportiere Daten aus Tabelle rfv.court_reservation: ~0 rows (ungefähr)
-DELETE FROM `court_reservation`;
+-- Exportiere Daten aus Tabelle rfv.court_reservation: ~1 rows (ungefähr)
 
 -- Exportiere Struktur von Tabelle rfv.reservation_type
 DROP TABLE IF EXISTS `reservation_type`;
@@ -104,10 +108,9 @@ CREATE TABLE IF NOT EXISTS `reservation_type` (
   `reservation_type` varchar(50) NOT NULL COMMENT 'ReservierungsartID',
   `admin_rights` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Adminberechtigung - J/N-Abfrage',
   PRIMARY KEY (`reservation_type_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Reservierungsart';
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Reservierungsart';
 
 -- Exportiere Daten aus Tabelle rfv.reservation_type: ~5 rows (ungefähr)
-DELETE FROM `reservation_type`;
 INSERT INTO `reservation_type` (`reservation_type_id`, `reservation_type`, `admin_rights`) VALUES
 	(1, 'Training', 1),
 	(2, 'Normale Reserverierung', 0),
@@ -121,10 +124,9 @@ CREATE TABLE IF NOT EXISTS `role` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'RollenID',
   `role` varchar(50) NOT NULL COMMENT 'Rolle',
   PRIMARY KEY (`role_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Rolle';
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Rolle';
 
 -- Exportiere Daten aus Tabelle rfv.role: ~5 rows (ungefähr)
-DELETE FROM `role`;
 INSERT INTO `role` (`role_id`, `role`) VALUES
 	(1, 'Administrator'),
 	(2, 'Platzwart'),
@@ -154,7 +156,6 @@ CREATE TABLE IF NOT EXISTS `user` (
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Benutzer';
 
 -- Exportiere Daten aus Tabelle rfv.user: ~3 rows (ungefähr)
-DELETE FROM `user`;
 INSERT INTO `user` (`user_id`, `email_address`, `first_name`, `last_name`, `password`, `count_of_false_logins`, `blocked_date`, `member_date`, `telephone_number`, `role_id`, `street`, `house_number`, `zip_code`, `city`, `country`) VALUES
 	(1, 'max.mustermann@mustermail.com', 'Max', 'Mustermann', 'muster123', 0, NULL, NULL, '66412345678', 3, 'Musterstraße', '1', 1234, 'Musterstadt', 'Musterland'),
 	(2, 'maxima.mustermann@mustermail.com', 'Maxima', 'Mustermann', 'muster456', 0, NULL, NULL, '66423456789', 3, 'Mustergasse', '2', 4567, 'Musterstadt', 'Musterland'),
