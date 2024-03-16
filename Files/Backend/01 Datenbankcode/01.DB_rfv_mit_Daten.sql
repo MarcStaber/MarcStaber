@@ -58,7 +58,7 @@ INSERT INTO `club_data` (`id`, `significance`, `characteristic`) VALUES
 	(1, 'Vereinsname', 'TC Neudauberg'),
 	(2, 'Postleitzahl', '7574'),
 	(3, 'Ort', 'Neudauberg'),
-	(4, 'Stra√üe', 'Thermenstra√üe'),
+	(4, 'Straﬂe', 'Thermenstraﬂe'),
 	(5, 'Hausnummer', '36'),
 	(6, 'Telefonnummer', '06641251195'),
 	(7, 'E-Mail', 'vorstand@tc-neudauberg.at'),
