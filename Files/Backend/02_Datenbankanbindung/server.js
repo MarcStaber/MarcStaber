@@ -1,5 +1,4 @@
 require('dotenv').config();
-//import validator from 'validator';
 "use strict";
 
 const Court = require("./models/Court");
@@ -14,8 +13,6 @@ var cors = require("cors");
 const { query } = require('express-validator');
 const db = require('./db');
 var session = require('express-session');
-//const emailValidator = require('express-validator');
-//const validator = require('validator');
 
 const app = express();
 
@@ -27,7 +24,6 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false }
 }));
-//app.use(emailValidator());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -48,12 +44,19 @@ app.use(cors(corsOpts));
 
 // Session prüfer middleware
 const requireAuth = (req, res, next) => {
+
+  console.log(req.session.id);
   if (req.session.user_id) {
       next(); // User is authenticated, continue to next middleware
   } else {
       res.redirect('/login'); // User is not authenticated, redirect to login page
   }
 }
+
+// function validateString(a, b) {
+
+// }
+
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -114,7 +117,6 @@ app.get('/', function(req, res) {
 //                             A B O U T 
 ////////////////////////////////////////////////////////////////////////////
 // TEST ONLY: about page (TEST)
-// wäre aber vielleicht ganz nett. Eine Seite über euch.
 // Fehlt Seite
 app.get('/about', function(req, res) {
   res.render('pages/about');
@@ -156,115 +158,100 @@ app.get('/register', function(req, res) {
   res.render('pages/register');
 });
 
-// Gehört getestet
+// count of false login // wenn sich jemand z.b. 5 mal das falsche password eingibt soll er gesperrt werden.
 app.post('/register', bodyParser.urlencoded({ extended: false }), async (req, res, next) => {
-  const email_address = req.body.email_address;
-  const first_name = req.body.first_name;
-  const last_name = req.body.last_name;
-  const password = req.body.password;
-  const telephone_number = req.body.telephone_number;
-  const street = req.body.street;
-  const house_number = req.body.house_number;
-  const zip_code = req.body.zip_code;
-  const city = req.body.city;
-  const country = req.body.country;
 
   // Datenbankverbindung
   try {
   conn = await db.pool.getConnection();
+
+  let email_address = req.body.email_address;
+  let first_name = req.body.first_name;
+  let last_name = req.body.last_name;
+  let password = req.body.password;
+  let telephone_number = req.body.telephone_number;
+  let street = req.body.street;
+  let house_number = req.body.house_number;
+  let zip_code = req.body.zip_code;
+  let city = req.body.city;
+  let country = req.body.country;
+
   let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
-  //const first_name_exists = await db.query('SELECT * FROM user WHERE first_name = $1', [first_name]);
-  //const last_name_exists = await db.query('SELECT * FROM user WHERE last_name = $1', [last_name]);
-  //const telephone_number_exists = await db.query('SELECT * FROM user WHERE telephone_number = $1', [telephone_number]);
 
-  //console.log(userdata[0].email_address);
-
-  //errorMessage = '';
-
-  // Validierungen Aller Felder.
-   if (email_address == userdata[0].email_address) {
-    if ( !(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))) {
-      // validator.isEmail(email_address)
-      return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler'});
-      userdata = undefined;
-      //return;
-    } else {
-      return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits'});
-      userdata = undefined;
-     //return;
+  if(userdata.length != 0) {
+    if (email_address.length > 0) {
+      if (userdata[0].email_address == email_address)  {
+        return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits'});
+      }
+      else if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))){
+        return res.render('pages/register.ejs', { errorMessage: 'Ihre Validierung passt nicht'});
+      }
+      else {
+        return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler'});
+      }
     }
-   }
+  }
    
    console.log(1);
-   if (first_name.length > 0 && /^[a-zA-Z0-9_]{6, 16}$/.test(first_name)) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Namen eingeben'});
+   if ((/^[a-zA-Z]{2,30}$/.test(first_name)) && first_name.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Vornamen eingeben'});
      return;
    }
    console.log(2);
-   if (last_name.length > 0 && /^[a-fA-F0-]+$/.test(last_name)) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Namen eingeben'});
+   if (!(/^[a-zA-Z]{2,30}$/.test(last_name)) && last_name.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Nachnamen eingeben'});
      return;
    }
    console.log(3);
-   if (password.length > 0 && /^[a-zA-Z0-9]$/.test(password)) {
+   if (password.length > 0 && !(/^[a-zA-Z0-9]$/.test(password))) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Passwort eingeben'});
      return;
    }
    console.log(4);
-   if (/^[0-9]{6, 10}$/.test(telephone_number) && telephone_number !== telephone_number_exists && telephone_number.length > 0) {
+   if (!(/^[0-9]{6,10}$/.test(telephone_number)) && telephone_number.length > 0) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Telefonnummer eingeben'});
      return;
    }
    console.log(5);
-   if (/^[a-zA-Z]$/.test(street) && street.length > 0) {
+   if (!(/^[a-zA-Z]$/.test(street)) && street.length > 0) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Straße eingeben'});
      return;
    }
    console.log(6);
-   if (/^[0-9]{1, 6}$/.test(house_number) && house_number.length > 0) {
+   if (!(/^[0-9]{1,6}$/.test(house_number)) && house_number.length > 0) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Hausnummer eingeben'});
      return;
    }
    console.log(7);
-   //console.log(userdata[0].zip_code);
-   if (/^[0-9]{1, 6}$/.test(zip_code) && zip_code.length > 0) {
+   if (!(/^[0-9]{1,6}$/.test(zip_code)) && zip_code.length > 0) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Postleitzahl eingeben'});
      return;
    }
    console.log(8);
-   if (/^[a-zA-Z]{6, 16}$/.test(city) && city.length > 0) {
+   if (!(/^[a-zA-Z]{6,16}$/.test(city)) && city.length > 0) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Stadt eingeben'});
      return;
    }
    console.log(9);
-   if (/^[a-zA-Z]{2, 16}$/.test(country) && country.length > 0) {
+   if (!(/^[a-zA-Z]{2,16}$/.test(country)) && country.length > 0) {
      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Land eingeben'});
      return;
    }
-   console.log(10);
-   // Validierungen
-   if (email_address === "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" || first_name === '^[a-zA-Z0-9_]{6,16}$' || last_name === '^[a-zA-Z0-9_]{6,16}$' || password === '' || telephone_number === '^[0-9]{6, 10}' || street === '' || house_number === '^[0-9]{1, 6}' || zip_code === '^[0-9]{4,5}' || city === '^[a-zA-Z]{6,16}$' || country === '') {
-     res.render('pages/register.ejs', { errorMessage: 'Achtung ich bitte Sie die Daten richtig einzugeben'});
-       return; // Return early if validation fails.
-   }
-   console.log(11);
 
-   // insert data hier hinein
+   // insert data in die Datenbank
    let lastID;
   try {
       const lastIDResult = await db.pool.query("SELECT IFNULL(MAX(user_id), 0) AS lastuserid FROM user");
       lastID = lastIDResult[0].lastuserid;
   } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ error: 'An error occurred while inserting data.' });
+      res.status(500).json({ error: 'Problem mit den Einfügen der Daten ist Aufgetreten.' });
       return; // Return early in case of an error.
   }
 
   // Increment the lastID to get the new BenutzerID
   const new_user_id = lastID + 1;
-
   const values = [new_user_id, email_address, first_name, last_name, password, 0, null, null, telephone_number, 3, street, house_number, zip_code, city, country];
-  console.log(values.toString())
   try {
       const result = await db.pool.query(
           `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
@@ -272,25 +259,19 @@ app.post('/register', bodyParser.urlencoded({ extended: false }), async (req, re
                                  \`house_number\`, \`zip_code\`, \`city\`, \`country\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           values
       );
-
       res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.'});
       return; 
-  
   } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ error: 'DAta not inbsertet erroro.' });
+      res.status(500).json({ error: 'Daten sind nicht hinzugefügt worden.' });
   } 
 
 } catch (error) {
   console.error(error);
-  res.status(500).send('Internal Server Error');
+  res.status(500).send('Server Error');
 } finally {
   if (conn) conn.end();
 }
-
-  
-
-  
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -314,7 +295,7 @@ app.post('/login', async function (req, res, next) {
 
           /// Fetch club settings data from the database using the appropriate column for filtering
           const userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${user_email_address}'`);
-          const userIdendifier = await conn.query(`SELECT user_id FROM user WHERE email_address = '${user_email_address}'`);
+          //const userIdendifier = await conn.query(`SELECT user_id FROM user WHERE email_address = '${user_email_address}'`);
 
 
          if(userdata.length === 1 ){
@@ -326,8 +307,7 @@ app.post('/login', async function (req, res, next) {
 
                 if (userdata[0].role_id === 3){
 
-                  res.redirect('/user/' + req.session.user_id);
-
+                  res.redirect('/user/' + req.session.id);
                   // Validate user credentials
                   // if () {
                   //   req.session.userId = userId; // Set session identifier
