@@ -1,0 +1,153 @@
+
+* {
+    box-sizing: border-box;
+}
+
+.column {
+    float: left;
+    width: 10%;
+    padding: 0px;
+}
+
+.columnText {
+    float: left;
+    text-align: center;
+    width: 79.5%;
+}
+
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #8eb967;
+}
+
+.row {
+    background-color: royalblue;
+}
+/*padding left value handle vertical space and right value handle horizontal value*/
+.topnav a {
+    float: left;
+    color: #4863a2;
+    text-align: center;
+    padding: 15px 13.5%;
+    text-decoration: none;
+    font-size: 17px;
+    background-color: #8eb967;
+}
+
+.topnav a:hover {
+    background-color: #64991c;
+    color: #4863a2;
+}
+
+.topnav a.active {
+    background-color: #64991c;
+    color: #4863a2;
+}
+/* Add this CSS for tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+th, td {
+    border: 1px solid #4863a2;
+    padding: 8px;
+    text-align: left;
+}
+
+thead {
+    background-color: #8eb967;
+    color: #4863a2;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #64991c;
+}
+
+tbody tr:hover {
+    background-color: #537e15;
+}
+
+/* Style the "Add User" link */
+a[href="/add"] {
+    display: inline-block;
+    padding: 10px;
+    background-color: #8eb967;
+    color: #4863a2;
+    text-decoration: none;
+    border: 1px solid #4863a2;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+a[href="/add"]:hover {
+    background-color: #64991c;
+}
+
+/* Add this CSS for h1 elements */
+h1 {
+    color: #8eb967;
+    text-align: center;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+/* Style h1 inside .mainPart */
+.mainPart h1 {
+    color: #4863a2;
+}
+/* Add this CSS for Edit and Delete buttons */
+button {
+    background-color: #8eb967;
+    color: #4863a2;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px; /* Adjust the margin as needed */
+}
+
+button a {
+    text-decoration: none;
+    color: #4863a2;
+}
+
+button:hover {
+    background-color: #64991c;
+}
+
+button:hover a {
+    color: #fff;
+}
+
+/* Add this CSS for pagination links */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+.pagination a {
+    color: #4863a2;
+    padding: 8px 16px;
+    text-decoration: none;
+    border: 1px solid #4863a2;
+    margin: 0 4px;
+    border-radius: 5px;
+}
+
+.pagination a:hover {
+    background-color: #64991c;
+    color: #fff;
+}
+
+.pagination a.active {
+    background-color: #64991c;
+    color: #fff;
+}
+
