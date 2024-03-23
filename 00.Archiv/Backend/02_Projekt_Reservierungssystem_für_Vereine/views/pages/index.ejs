@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <%- include('../partials/head'); %>
+</head>
+<body class="container">
+
+<header>
+    <%- include('../partials/header', {variant: 'compact'}); %>
+</header>
+
+<h1>Startseite</h1>
+
+<h2>Unsere Tennisplätze</h2>
+<ul>
+  <% courts.forEach(function(c) { %>
+    <li>
+      <%= c.court_id %>. <strong><%= c.court %></strong>
+    </li>
+  <% }); %>
+</ul>
+
+
+<footer>
+  <%- include('../partials/footer'); %>
+</footer>
+
+
+
+</body>
+</html>

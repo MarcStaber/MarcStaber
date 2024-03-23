@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetLogin.css">
+  <link rel="stylesheet1" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> 
+</head>
+
+<body>
+
+  <header class="mainHeader" id="Start">
+    <div class="mainHeader1">  
+      <img class="logo" src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+      <flexitem></flexitem>
+      <flexitem></flexitem>
+    </div>
+    <div class="mainHeader2">
+      <h1>Reservierungssystem für Vereine</h1>
+      <p id="clubName"> Platzhalter für Vereinsname </p>
+      <br>
+    </div>
+    <div class="mainHeader3">  
+      <flexitem></flexitem>
+      <a href="register"><button>Registrierung</button></a>
+      <img class="logo" src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+    </div>
+  </header>
+
+  <h2>Login</h2>
+
+  <section class="mainPart" id="Login">
+
+    <article>
+      <form class="loginForm" action="/login" method="post">
+        <p>EMAIL:</p>
+        <input type="email" name="email_address" id="email_address" class="form__email" placeholder="E-Mail-Adresse" />
+        <p>PASSWORT:</p>
+        <input type="password" name="password" id="password" class="form__password" placeholder="Passswort" />
+        <p></p>
+        <button type="submit" class="form__button">Login</button>
+      </form>
+      <p id="loginMessageOut" style="color: red"></p>
+      <a href="forgetPW"><button class="form__button">Passwort vergessen</button></a>
+    </article>
+
+  </section>
+
+
+
+  <%- include('../partials/footer'); %>
+
+
+
+</body>
+</html>

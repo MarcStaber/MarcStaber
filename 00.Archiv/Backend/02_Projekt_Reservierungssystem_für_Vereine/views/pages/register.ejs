@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetRegister.css"">
+  <link rel="stylesheet1" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+  <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  <script src="http://localhost:3000/static/registerJS.js"></script>
+</head>
+
+<body>
+
+  <header class="mainHeader" id="Start">
+    <div class="mainHeader1">  
+      <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+      <flexitem></flexitem>
+      <flexitem></flexitem>
+    </div>
+    <div class="mainHeader2">
+      <h1>Reservierungssystem für Vereine</h1>
+      <p id="clubName"> Platzhalter für Vereinsname </p>
+      <br>
+    </div>
+    <div class="mainHeader3">  
+      <flexitem></flexitem>
+      <a href="login"><button>Log in</button></a>
+      <img class="logo" src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+    </div>
+  </header>
+
+
+  <div class="mainPartHeader">
+  <h2>Registrierung</h2>
+  <p class="infoReg">Bitte füllen Sie die erforderlichen Informationen in die für sie vorgesehenen Felder, um den Registrationsvorgang erfolgreich abzuschließen:</p>
+  </div>
+  <section class="mainPart" id="registry">
+  <form action="/register" method="post">
+    <article class="registerForm">
+      <label for="email_address">E-mail</label>
+      <input type="email" id="email_address" name="email_address" placeholder="Email" required>
+
+      <label for="password">Passwort</label>
+      <input type="password" id="password" name="password" placeholder="Passswort" required>
+
+      <label for="password1">Passwort bestätigen</label>
+      <input type="password" id="password1" name="password1" placeholder="Passswort bestätigen" required>
+      
+      <label for="first_name">Vorname</label>
+      <input type="text" id="first_name" name="first_name" placeholder="Vorname" required>
+      
+      <label for="last_name">Nachname</label>
+      <input type="text" id="last_name" name="last_name" placeholder="Nachname" required>
+      
+      <label for="telephone_number">Telefonnummer</label>
+      <input type="tel" id="telephone_number" name="telephone_number" placeholder="Telefonnummer" required>
+    </article>
+    <flexitem> </flexitem>
+    <article class="registerForm">
+      <label for="street">Straße</label>
+      <input type="tel" id="street" name="street" placeholder="Straße" required>
+  
+      <label for="house_number">Hausnummer</label>
+      <input type="tel" id="house_number" name="house_number" placeholder="Hausnummer" required>
+  
+      <label for="zip_code">Postleitzahl</label>
+      <input type="tel" id="zip_code" name="zip_code" placeholder="Postleitzahl" required>
+  
+      <label for="city">Ort</label>
+      <input type="tel" id="city" name="city" placeholder="Ort" required>
+  
+      <label for="country">Land</label>
+      <input type="tel" id="country" name="country" placeholder="Land" required>
+      <label></label>
+      <input id="buttonRegister" type="submit" value="Jetzt registrieren">
+
+
+    </article>
+  </form>
+  <div id="messageFieldReg">
+    <p id="messageOutputReg"> Alle Felder müssen ausgefüllt werden. </p>
+  </div>
+</section>
+
+  
+<%- include('../partials/footer'); %>
+ 
+
+</body>
+
+</html>
+
+
