@@ -1,10 +1,16 @@
-//const User = require("../models/user");
 const db = require('../config/database');
 
 
 exports.getAllAddressLookups = async (req, res, next) => {
     try {
-        let query = "SELECT * FROM address_lookup";
+
+        const street = maskStringValueLike(req.body.street, "street");
+        const zip_code = maskStringValueLike(req.body.zip_code, "zip_code");
+        const city = maskStringValueLike(req.body.city, "city");
+
+        let query = "SELECT UNIQUE street, zip_code, city, country FROM address_lookup WHERE 1=1 " + street + zip_code + city;
+        console.log(query);
+
         const result = await db.pool.query(query);
 
         res.status(200).json({ result });
@@ -14,6 +20,14 @@ exports.getAllAddressLookups = async (req, res, next) => {
     }
 }
 
+function maskStringValueLike(val, fieldname) {
+    if (val != null) {
+        return " AND LOWER(" + fieldname + ") LIKE '%" + val.toLowerCase() + "%' ";
+    }
+    return "";
+}
+
+/*
 exports.getAddressLookupById = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -101,4 +115,4 @@ exports.deleteAddressLookupById = async (req, res, next) => {
         next(error);
     }
 }
-
+*/

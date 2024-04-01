@@ -87,7 +87,7 @@ exports.deleteReservationTypeById = async (req, res, next) => {
         const id = req.params.id;
         let query = `DELETE FROM reservation_type WHERE reservation_type_id = ${id};`;
         await db.pool.query(query);
-        res.status(200).send({message: `Reservation type ${id} delete`});
+        res.status(200).send({message: `Reservation type ${id} deleted`});
     } catch (error) {
         console.log(error);
         next(error);
