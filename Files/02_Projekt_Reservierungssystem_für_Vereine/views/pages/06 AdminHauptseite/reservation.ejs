@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservierung</title>
+    
+    <link rel="stylesheet" href="/css/pages/06 AdminHauptseite/reservation.css"> />
+    <link href='fullcalendar/main.css' rel='stylesheet' />
+    <script src="https://kit.fontawesome.com/24eb8f8898.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="row">
+    <div class="column">
+        <img src="Logo.png" alt="Club Image" width="150" height="150">
+    </div>
+
+    <div class="columnText">
+        <h1 name="club_significance ">
+          <%= club[0].significance %>
+        </h1>
+        <p name="club_characteristic">
+          <%= club[0].characteristic %>
+        </p>
+        </div>
+
+    <div class="column">
+        <img src="Logo.png" alt="Club Image" width="150" height="150">
+    </div>
+</div>
+
+<div class="topnav">
+    <a href="/vereinverwaltung">Vereinverwaltung</a>
+    <a class="active" id="reservationBtn" href="/reservierung"> Reservierung</a>
+    <a href="/adminpage">Benutzerverwaltung</a>
+</div>
+
+<div class="addEventButton" id="addEvent">
+    <a href="/addEvent">Hier klicken um zu reservieren!</a>
+</div>
+
+<div id="calendar"></div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
+<script>
+
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'timeGridWeek', // Set initial view to timeGridWeek
+        firstDay: 1,
+        fixedWeekCount: true,
+        slotDuration: '00:30:00', // Adjust slot duration as needed
+        slotLabelInterval: '01:00', // Show hour labels every hour
+        slotMinTime: '07:00:00',
+        slotMaxTime: '24:00:00',
+        snapDuration: '00:15:00',
+        slotLabelFormat: 
+        { hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false,
+        omitZeroMinute: false },
+        allDaySlot: false, // Hide all-day slot
+        headerToolbar: {
+            left: 'prev,next today, myCustomButton1,myCustomButton2',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay',
+        },
+        customButtons: {
+            myCustomButton1: {
+                text: 'Platz 1',
+                click: function() {
+                    // Handle button click event
+                    console.log('Button 1 clicked');
+                }
+            },
+            myCustomButton2: {
+                text: 'Platz 2',
+                click: function() {
+                    // Handle button click event
+                    console.log('Button 2 clicked');
+                }
+            }
+        },
+        buttonClassNames: {
+            myCustomButton1: 'active-button' // Add class 'active-button' when myCustomButton1 is active
+        },
+
+        locale: 'de', // Set locale to German (change as needed)
+        dayHeaderFormat: {
+            weekday: 'long', // Display full weekday name (e.g., Monday)
+            month: 'numeric', // Display numeric month (e.g., 01 for January)
+            day: 'numeric', // Display numeric day of the month (e.g., 01)
+            year: 'numeric' // Display numeric year
+        },
+        views: {
+            dayGridMonth: {
+                dayHeaderFormat: { weekday: 'long' } // Display no day headers in month view
+            }
+        },
+        buttonText: {
+            today: 'Heute',
+            week: 'Woche',
+            day: 'Tag',
+            month: 'Monat' // Custom text for month button
+        },
+        
+        events: [
+            {
+                title: 'Max Mustermann',
+                description: 'Platzreservierung',
+                start: '2024-04-04T10:00:00', // Start time of the event
+                end: '2024-04-04T12:00:00' // End time of the event
+            },
+
+           
+        ],
+        eventContent: function(arg) {
+            return {
+                html: '<b>' + arg.timeText + '</b><br>' + '<b>' + arg.event.title + '</b><br>' + arg.event.extendedProps.description
+            };
+        },
+
+    
+    });
+    
+    calendar.render();
+});
+
+
+
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>

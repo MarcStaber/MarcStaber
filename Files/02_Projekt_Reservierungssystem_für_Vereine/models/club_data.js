@@ -1,3 +1,5 @@
+const db = require('../config/database');
+
 class club_data {
     constructor() {
         this.club_id = 0;
@@ -210,4 +212,20 @@ class club_data {
     //     return new club_data().fromString(string);
     // }
 
+
+    static async findAll() {
+        let array = [];
+        try {
+            let query = "SELECT * FROM club_data";
+            const result = await db.pool.query(query);
+            return result;
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+        return array;
+    }
+    
 }
+
+module.exports = club_data;

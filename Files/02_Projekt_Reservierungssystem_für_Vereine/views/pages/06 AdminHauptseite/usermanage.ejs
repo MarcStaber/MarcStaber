@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reservierungsseite für Vereine</title>
+  <link rel="stylesheet" type="text/css" href="/css/pages/06 AdminHauptseite/admin.css"> />
+</head>
+
+<body>
+  <div class="row">
+    <div class="column">
+      <img src="Logo.PNG" alt="Club Image" width="150" height="150">
+    </div>
+
+    <div class="columnText">
+      <h1 name="club_significance ">
+        <%= club[0].significance %>
+      </h1>
+      <p name="club_characteristic">
+        <%= club[0].characteristic %>
+      </p>
+      <p>ADMIN</p>
+    </div>
+
+    <div class="column">
+      <img src="Logo.PNG" alt="Club Image" width="150" height="150">
+    </div>
+  </div>
+
+  <div class="topnav">
+    <a class="active" href="/adminpage"> Benutzerverwaltung</a>
+    <a href="/reservierung"> Reservierung</a>
+    <a href="/vereinverwaltung">  Vereinverwaltung</a>
+  </div>
+
+
+  <section class="mainPart" id="Account">
+    <article>
+      <!--<p>Test</p>!-->
+    </article>
+    <h1>Benutzerliste</h1>
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Vorname</th>
+          <th>Nachname</th>
+          <th>Email</th>
+          <th>Gesperrtdatum</th>
+          <th>Mitgliedsdatum</th>
+          <th>Telefonnummer</th>
+          <th>RollenID</th>
+          <th>Adresse</th>
+          <th>Hausnummer</th>
+          <th>Postleitzahl</th>
+          <th>Stadt</th>
+          <th>Land</th>
+          <th>Aktionen</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach(user=> { %>
+          <tr>
+            <td>
+              <%= user.first_name %>
+            </td>
+            <td>
+              <%= user.last_name %>
+            </td>
+            <td>
+              <%= user.email_address %>
+            </td>
+            <td>
+              <%= user.blocked_date %>
+            </td>
+            <td>
+              <%= user.member_date %>
+            </td>
+            <td>
+              <%= user.telephone_number %>
+            </td>
+            <td>
+              <%= user.role_id %>
+            </td>
+            <td>
+              <%= user.street %>
+            </td>
+            <td>
+              <%= user.house_number %>
+            </td>
+            <td>
+              <%= user.zip_code %>
+            </td>
+            <td>
+              <%= user.town %>
+            </td>
+            <td>
+              <%= user.country %>
+            </td>
+            <td>
+              <button>
+                <a href="/edit/<%= user.user_id %>">Edit</a>
+              </button>
+              <button>
+                <a href="/delete/<%= user.user_id %>">Delete</a>
+              </button>
+            </td>
+          </tr>
+          <% }); %>
+      </tbody>
+    </table>
+
+    <!-- Pagination links go here -->
+    <div class="pagination">
+      <% for (let i=1; i <=totalPages; i++) { %>
+        <a href="/?page=<%= i %>" <%=currentPage==i ? 'class="active"' : '' %>><%= i %></a>
+        <% } %>
+    </div>
+
+    <a href="/add">Add User</a>
+
+</body>
+
+</html>
