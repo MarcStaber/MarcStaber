@@ -97,6 +97,8 @@ app.use("/api/login", require("./routes/userRoutes"));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use('/css', express.static(path.join(__dirname, 'views')));
+app.use('/images', express.static(path.join(__dirname, 'views')));
+
 
 ////////////////////////////////////////////////////////////////////////////
 //                             I N D E X 
@@ -166,6 +168,7 @@ app.get('/adminpage', async function (req, res) {
   }
 });
 
+
 app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
   const { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts } = req.body;
   // Replace the 'hardcode' fields with the HTML fields from the form
@@ -180,6 +183,8 @@ app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
     { id: 8, significance: 'Webseite', characteristic: 'www.tc-neudauberg.at' },
     { id: 9, significance: 'max_reservierungs_minuten', characteristic: clubCourts }
   ];
+
+ 
 
   // Check if required fields are empty or null
   if (!clubMainTitle || !clubAddress || !clubEmail || !clubPhoneNumber || !clubCourts) {
@@ -198,7 +203,7 @@ app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
     }
     console.log("All data saved successfully!");
     //res.send("All data saved successfully!");
-    res.redirect('/usermanage')
+    res.redirect('/vereinverwaltung')
   } catch (error) {
     console.error("Error saving data:", error);
     res.status(500).send("Internal Server Error");
@@ -318,7 +323,7 @@ app.post('/add', async (req, res) => {
 
   try {
     await db.pool.query(sql, values);
-    res.redirect('/');
+    res.redirect('/adminpage');
   } catch (error) {
     console.error(error);
   }
