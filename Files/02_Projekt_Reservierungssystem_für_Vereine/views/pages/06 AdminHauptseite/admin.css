@@ -1,6 +1,9 @@
 
-* {
-    box-sizing: border-box;
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
 }
 
 .column {
@@ -13,6 +16,8 @@
     float: left;
     text-align: center;
     width: 79.5%;
+    padding-left: 0;
+    
 }
 
 .row::after {
@@ -24,10 +29,15 @@
 .topnav {
     overflow: hidden;
     background-color: #8eb967;
+    position: absolute; /* Ensures topnav stays at the top */
+    width: 100%; /* Ensure it spans the full width */
 }
 
 .row {
-    background-color: royalblue;
+    background-color: rgb(70, 95, 153);
+    display: flex;
+    justify-content: center;
+    padding: 0;
 }
 /*padding left value handle vertical space and right value handle horizontal value*/
 .topnav a {

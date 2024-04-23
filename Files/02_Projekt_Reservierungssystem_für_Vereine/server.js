@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
     cb(null, 'public/'); // Specify the destination folder for uploaded images
   },
   filename: function (req, file, cb) {
-    cb(null, 'logo.png'); // Set a static filename or use a unique identifier
+    cb(null, 'Logo.png'); // Set a static filename or use a unique identifier
   },
 });
 
@@ -97,7 +97,7 @@ app.use("/api/login", require("./routes/userRoutes"));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use('/css', express.static(path.join(__dirname, 'views')));
-app.use('/images', express.static(path.join(__dirname, 'views')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
 
 
 ////////////////////////////////////////////////////////////////////////////
