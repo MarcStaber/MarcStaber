@@ -168,7 +168,9 @@ app.get('/adminpage', async function (req, res) {
   }
 });
 
-
+////////////////////////////////////////////////////////////////////////////
+//                             Vereinsverwaltung (save data)
+////////////////////////////////////////////////////////////////////////////
 app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
   const { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts } = req.body;
   // Replace the 'hardcode' fields with the HTML fields from the form
@@ -210,6 +212,9 @@ app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
   }
 });
 
+////////////////////////////////////////////////////////////////////////////
+//                             Vereinsverwaltung 
+////////////////////////////////////////////////////////////////////////////
 app.get('/vereinverwaltung', async function (req, res) {
   try {
     /// Fetch club settings data from the database 
@@ -224,6 +229,9 @@ app.get('/vereinverwaltung', async function (req, res) {
   }
 });
 
+////////////////////////////////////////////////////////////////////////////
+//                             Kalender (admin)
+////////////////////////////////////////////////////////////////////////////
 app.get('/reservierung', async function (req, res) {
   try {
     /// Fetch club settings data from the database
@@ -237,38 +245,12 @@ app.get('/reservierung', async function (req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
-
+////////////////////////////////////////////////////////////////////////////
+//                             Benutzer hinzufügen
+////////////////////////////////////////////////////////////////////////////
 app.get('/add', (req, res) => {
   // Pass a default null value for errorMessage
   res.render('pages/06 AdminHauptseite/add.ejs', { errorMessage: null });
-});
-
-app.get('/edit/:user_id', async (req, res) => {
-  const userId = req.params.user_id;
-  let conn;
-  try {
-    conn = await db.pool.getConnection();
-    const result = await conn.query('SELECT * FROM user WHERE user_id = ?', [userId]);
-    res.render('pages/06 AdminHauptseite/edit.ejs', { user: result[0] });
-  } catch (error) {
-    throw error;
-  } finally {
-    if (conn) conn.end();
-  }
-});
-
-app.get('/delete/:user_id', async (req, res) => {
-  const userId = req.params.user_id;
-  let conn;
-  try {
-    conn = await db.pool.getConnection();
-    await conn.query('DELETE FROM user WHERE user_id = ?', [userId]);
-    res.redirect('/adminpage');
-  } catch (error) {
-    throw error;
-  } finally {
-    if (conn) conn.end();
-  }
 });
 
 app.post('/add', async (req, res) => {
@@ -329,6 +311,24 @@ app.post('/add', async (req, res) => {
   }
 });
 
+
+////////////////////////////////////////////////////////////////////////////
+//                             Benutzer bearbeiten 
+////////////////////////////////////////////////////////////////////////////
+app.get('/edit/:user_id', async (req, res) => {
+  const userId = req.params.user_id;
+  let conn;
+  try {
+    conn = await db.pool.getConnection();
+    const result = await conn.query('SELECT * FROM user WHERE user_id = ?', [userId]);
+    res.render('pages/06 AdminHauptseite/edit.ejs', { user: result[0] });
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.end();
+  }
+});
+
 app.post('/edit/:user_id', async (req, res) => {
   const userId = req.params.user_id;
 
@@ -362,7 +362,7 @@ app.post('/edit/:user_id', async (req, res) => {
       country = ?
     WHERE user_id = ?
   `;
-
+ 
   const values = [
     updatedUser.first_name,
     updatedUser.last_name,
@@ -382,6 +382,71 @@ app.post('/edit/:user_id', async (req, res) => {
     res.redirect('pages/06 AdminHauptseite/edit.ejs');
   } catch (error) {
     console.error(error);
+  }
+});
+
+
+////////////////////////////////////////////////////////////////////////////
+//                             Benutzer löschen
+////////////////////////////////////////////////////////////////////////////
+app.get('/delete/:user_id', async (req, res) => {
+  const userId = req.params.user_id;
+  let conn;
+  try {
+    conn = await db.pool.getConnection();
+    await conn.query('DELETE FROM user WHERE user_id = ?', [userId]);
+    res.redirect('/adminpage');
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.end();
+  }
+});
+////////////////////////////////////////////////////////////////////////////
+//                             ADD EVENT User
+////////////////////////////////////////////////////////////////////////////
+
+app.get('/event', async function (req, res) {
+  try {
+    
+    res.render('pages/3.5 UserHauptseite/addEvent.ejs', { errorMessage: null });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////
+//                             ADD EVENT Admin
+////////////////////////////////////////////////////////////////////////////
+
+app.get('/event', async function (req, res) {
+  try {
+    
+    res.render('pages/06 AdminHauptseite/addEvent.ejs', { errorMessage: null });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////
+//                             B E N U T Z E R H A U P T S E I T E 
+////////////////////////////////////////////////////////////////////////////
+
+app.get('/usermain', async function (req, res) {
+  try {
+    
+    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
+    const club = clubSettingsResult;
+
+    // Render the 'clubsettings' view and pass the data
+    res.render('pages/3.5 UserHauptseite/userhauptseite.ejs', { club, errorMessage: '' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 });
 
@@ -677,16 +742,23 @@ app.get('/user/:userid', requireAuth, function (req, res) {
 
   if (req.session.role_id === 3)
     res.render('pages/user');
-  else
-    res.render('pages/admin');
+  else if (req.session.role_id === 1)
+    res.render('pages/06 AdminHauptseite/reservation.ejs')
+  else {
+    res.render('pages/user');
+  };
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //                             R O L E 
 ////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////
+//                             User
+////////////////////////////////////////////////////////////////////////////
 // TODO: role page
-app.get('/role', function (req, res) {
-  res.render('pages/role');
+app.get('/user', function (req, res) {
+  res.render('pages/user');
 });
 ////////////////////////////////////////////////////////////////////////////
 //                             C O U R T 

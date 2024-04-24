@@ -1,0 +1,245 @@
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.column {
+    float: left;
+    width: 10%;
+    padding: 0px;
+}
+
+.columnText {
+    float: left;
+    text-align: center;
+    width: 79.5%;
+}
+
+a {
+    font-weight: bold;
+}
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #8eb967;
+    width: 100%;
+}
+
+.row {
+    background-color: rgb(70, 95, 153);
+    width: 100%;
+    
+}
+/*padding left value handle vertical space and right value handle horizontal value*/
+
+
+.topnav a:hover {
+    background-color: #64991c;
+    color: white;
+}
+
+.topnav a.active {
+    background-color: #64991c;
+    color: white;
+}
+
+/* Style the "Add User" link */
+a[href="/add"] {
+    display: inline-block;
+    padding: 10px;
+    background-color: #8eb967;
+    color: white;
+    text-decoration: none;
+    border: 1px solid #4863a2;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+a[href="/add"]:hover {
+    background-color: #64991c;
+}
+
+/* Add this CSS for h1 elements */
+h1 {
+    color: #8eb967;
+    text-align: center;
+    margin-top: 20px; /* Adjust the margin as needed */
+}
+
+/* Style h1 inside .mainPart */
+.mainPart h1 {
+    color: white;
+}
+/* Add this CSS for Edit and Delete buttons */
+button {
+    background-color: #8eb967;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px; /* Adjust the margin as needed */
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+}
+
+
+button:hover {
+    background-color: #64991c;
+}
+
+
+
+.addEventButton a {
+    border-width: 2.5px;
+    border-color: black;
+    border-style: solid;
+    border-radius: 0;
+    background-color: rgb(196, 157, 16);
+    width: 100%;
+    height: 30%;
+    margin-bottom: 0;
+    margin-top: 0;
+    font-weight: bold;
+    display: inline-block; /* Ensure the anchor tag behaves like a block element */
+    text-decoration: none; /* Remove underline */
+    text-align: center; /* Center text */
+    line-height: 2; /* Adjust line height for vertical centering */
+    color: white /* Set text color */
+}
+
+.mainText {
+    font-size: 40px;
+    font-weight: bold;
+
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #8eb967;
+    width: 100%;
+    display: flex; /* Use flexbox to manage the layout */
+}
+
+.topnav a {
+    flex: 1; /* Each link occupies one-third of the available space */
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    text-decoration: none;
+    font-size: 17px;
+    background-color: #8eb967;
+    border: 2.5px solid black; /* Border style */
+}
+
+
+
+
+#calendar {
+    background-color: transparent !important;
+    width: 100%; /* Adjust the width as needed */
+    height: 700px; /* Adjust the height as needed */
+    font-size: 20px; /* Adjust the font size as needed */
+    color: black;
+}
+
+
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#calendar {
+    background-color: transparent !important;
+    width: 100%;
+    height: 700px;
+    font-size: 20px;
+    color: black;
+}
+
+#calendar .fc-toolbar-title {
+    text-align: center !important;
+}
+
+.fc-header-toolbar,
+.fc-footer-toolbar {
+    color: black;
+    text-align: center;
+}
+
+.fc-button {
+    background-color: #8eb967;
+    color: black;
+    border-color: #8eb967;
+}
+
+.fc-button:hover {
+    background-color: #64991c;
+    border-color: #64991c;
+}
+
+.fc-toolbar-title {
+    text-align: center !important;
+}
+
+.fc-toolbar.fc-header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fc-button-group {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.fc-button {
+    background-color: #8eb967;
+    color: black;
+    border-color: #8eb967;
+    padding: 5px 10px; /* Adjust padding as needed */
+}
+
+.fc-left,
+.fc-center,
+.fc-right {
+    flex: 1;
+}
+
+.fc--button.fc-button.fc-button-primary {
+    display: none;
+}
+
+.mainText {
+    color: white;
+}
+
+.fc-button.active-button {
+    
+    background-color: #1a252f
+    
+}
+
+.fc-button-active-bg-color {
+    background-color: #1a252f;
+}
+
+.fc-event-dot.platzreservierung-event {
+    background-color: blue !important; /* Set background color to red */
+}
+
+/* Custom background color for events with description "Training" */
+.red-background {
+    background-color: red !important;
+}

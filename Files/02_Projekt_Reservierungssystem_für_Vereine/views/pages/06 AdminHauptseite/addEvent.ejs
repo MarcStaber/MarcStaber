@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Event</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/main.css" rel="stylesheet">
+<link rel="stylesheet" href="/css/pages/06 AdminHauptseite/addEvent.css" />
+<style>
+    form {
+        display: flex;
+        flex-direction: column;
+        max-width: 300px;
+    }
+    label {
+        margin-bottom: 5px;
+    }
+    input[type="text"],
+    input[type="submit"] {
+        margin-bottom: 10px;
+        padding: 5px;
+    }
+</style>
+</head>
+<body>
+
+<form action="/addEvent" method="post" id="eventForm">
+    <label for="fullName">Vor und Nachname:</label>
+    <input type="text" id="fullName" name="fullName" required>
+    <label for="eventTitle">Eventbeschreibung:</label>
+    <input type="text" id="eventTitle" name="eventTitle" required>
+    <label for="eventStart">Eventbeginn:</label>
+    <input type="datetime-local" id="eventStart" name="eventStart" required>
+    <label for="eventEnd">Eventende:</label>
+    <input type="datetime-local" id="eventEnd" name="eventEnd" required>
+    <input type="submit" value="Reservierung hinzufügen">
+</form>
+
+<div id="calendar"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/main.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script src="calendar.js"></script>
+
+<script>
+    // Function to add event to the calendar
+    function addEvent(formData) {
+        var fullName = formData.get('fullName');
+        var eventTitle = formData.get('eventTitle');
+        var eventStart = formData.get('eventStart');
+        var eventEnd = formData.get('eventEnd');
+
+        // Add event to calendar
+        calendar.addEvent({
+            title: fullName + ' - ' + eventTitle, // Combine full name and event title
+            start: eventStart,
+            end: eventEnd,
+            allDay: false // Assuming events are not all-day by default
+        });
+
+        // Rerender the calendar to reflect the changes
+        calendar.render();
+    }
+
+    // Handle form submission
+    document.getElementById('eventForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        var formData = new FormData(this); // Get form data
+
+        // Add event using the addEvent function
+        addEvent(formData);
+
+        // Reset form
+        this.reset();
+    });
+</script>
+</body>
+</html>
