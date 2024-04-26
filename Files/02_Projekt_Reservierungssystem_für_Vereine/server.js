@@ -451,12 +451,66 @@ app.get('/usermain', async function (req, res) {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//                             B E N U T Z E R H A U P T S E I T E 
+//                             B E N U T Z E R ACCOUNTDETAILS 
 ////////////////////////////////////////////////////////////////////////////
-app.get('/benutzerhauptseite', function (req, res) {
-  res.render('pages/03 UserHauptseite/Projekt_BenutzerHauptSeite.ejs');
+//Muss noch in User details und Accountdetails umgeändert!!!
+
+app.get('/accountdetails', async function (req, res) {
+  try {
+    /// Fetch club settings data from the database 
+
+    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
+    const club = clubSettingsResult;
+
+    
+
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user');
+    const account = accountSettingsResult;
+
+    
+    res.render('pages/3.5 UserHauptseite/accountdetails.ejs', {
+      account,
+      club,
+      errorMessage: '', // Example error message
+      additionalError: '', // Another error message
+    });
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
+
+
+
+app.get('/accountdetails', async (req, res) => {
+  const userId = 3; // This can also be passed in as a parameter
+  try {
+    const query = `
+      SELECT * FROM user WHERE user_id = ?;
+    `;
+    const [user] = await db.pool.query(query, [userId]);
+
+    if (user.length > 0) {
+      res.render('/accountdetails', { account: user });
+    } else {
+      res.status(404).send('User not found');
+    }
+  } catch (error) {
+    console.error("Error retrieving user:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+////////////////////////////////////////////////////////////////////////////
+//                             B E N U T Z E R H A U P T S E I T E 
+////////////////////////////////////////////////////////////////////////////
+/*app.get('/benutzerhauptseite', function (req, res) {
+  res.render('pages/03 UserHauptseite/Projekt_BenutzerHauptSeite.ejs');
+});
+*/
 ////////////////////////////////////////////////////////////////////////////
 //                             U S E R A C C O U N T 
 ////////////////////////////////////////////////////////////////////////////
@@ -681,44 +735,7 @@ app.post('/login', async function (req, res, next) {
 
 
 
-    /* conn = await db.pool.getConnection();
-     conn.query = `SELECT *
-              FROM user
-              WHERE email_address = '${user_email_address}'`;
-
-     console.log(conn.query.toString())
-
-     console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-
-     db.pool.query(query, function (error, data) {
-         console.log("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
-         if (data.length > 0) {
-             for (let count = 0; count < data.length; count++) {
-                 // testen
-                 if (data[count].password === user_password) {
-                     req.session.user_id = data[count].user_id;
-                     // zur seite weiterleiten
-                     res.redirect('/user');
-                     // if(user_id == getrole_id){
-                     //   res.redirect('/admin');
-                     // }
-                     // else{
-                     //   //res.redirect('/user');
-                     // }
-
-                 } else {
-                     const error = 'Falsches Passwort!';
-                     return res.render('login', { errorMessage: error });
-                     //res.send('Falsches Passwort!');
-                 }
-             }
-         } else {
-             const error = 'Falsche E-Mail-Adresse!';
-             return res.render('login', { errorMessage:  error });
-             //res.send('Falsche E-Mail-Adresse!');
-         }
-         res.end();
-     });*/
+    
   } else {
     const error = 'Bitte füllen Sie alle Felder aus!';
     return res.render('login', { errorMessage: error });
