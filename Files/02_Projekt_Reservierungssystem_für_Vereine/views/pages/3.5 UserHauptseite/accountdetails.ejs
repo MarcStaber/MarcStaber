@@ -23,7 +23,10 @@
       <p name="club_characteristic">
         <%= club[6].characteristic %>
       </p>
-      <p>Benutzername MUSS HIER STEHEN!!!!!</p>
+      <p name"">
+        <%= account[0].first_name %>
+        <%= account[0].last_name %>
+      </p>
     </div>
 
     <div class="column">
@@ -36,6 +39,33 @@
     <a href="/usermain"> Reservierung</a>
     <a href="/"> Platzhalter</a>
   </div>
+
+  <script>
+    function toggleShowPassword() {
+        const passwordInput = document.getElementById('userPassword');
+        const confirmInput = document.getElementById('confirmPassword');
+        const showPasswordCheckbox = document.getElementById('showPassword');
+        const inputType = showPasswordCheckbox.checked ? 'text' : 'password';
+
+        passwordInput.type = inputType;
+        confirmInput.type = inputType;
+    }
+
+    function validatePassword() {
+        const passwordInput = document.getElementById('userPassword');
+        const confirmInput = document.getElementById('confirmPassword');
+        const saveButton = document.getElementById('saveButton');
+
+        if (passwordInput.value === confirmInput.value && passwordInput.value.trim() !== '') {
+            saveButton.disabled = false;
+        } else {
+            saveButton.disabled = true;
+        }
+    }
+</script>
+
+
+
 
   <% if (account && account.length > 0) { %>
     <form action="/saveAccountdetails" method="post" enctype="multipart/form-data">
@@ -81,10 +111,20 @@
   
       <div class="form-group">
         <label for="userPassword">Passwort</label>
-        <input type="text" id="userPassword" name="userPassword" value="<%= account[0].password %>">
+        <input type="password" id="userPassword" name="userPassword" value="<%= account[0].password %>">
       </div>
+
+      <div class="form-group">
+        <label for="confirmPassword">Passwort bestätigen</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" oninput="validatePassword()">
+    </div>
+
+    <div class="form-group">
+        <input type="checkbox" id="showPassword" onchange="toggleShowPassword()">
+        <label for="showPassword">Passwort anzeigen</label>
+    </div>
   
-      <button type="submit">Save Changes</button>
+      <button type="submit" id="saveButton" disabled>Änderungen speichern</button>
     </form>
     <% } else { %>
       <!-- Handle the 'else' condition -->

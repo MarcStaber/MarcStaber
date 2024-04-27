@@ -442,8 +442,16 @@ app.get('/usermain', async function (req, res) {
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user');
+    const account = accountSettingsResult;
+
     // Render the 'clubsettings' view and pass the data
-    res.render('pages/3.5 UserHauptseite/userhauptseite.ejs', { club, errorMessage: '' });
+    res.render('pages/3.5 UserHauptseite/userhauptseite.ejs', { 
+      account,
+      club,
+      errorMessage: '', // Example error message
+      additionalError: '', // Another error message
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -481,27 +489,33 @@ app.get('/accountdetails', async function (req, res) {
   }
 });
 
+////////////////////////////////////////////////////////////////////////////
+//                             B E N U T Z E R ACCOUNTDETAILS SPEICHERN
+////////////////////////////////////////////////////////////////////////////
 
-
-
-app.get('/accountdetails', async (req, res) => {
-  const userId = 3; // This can also be passed in as a parameter
+app.get('/saveAccountdetails', async function (req, res) {
   try {
-    const query = `
-      SELECT * FROM user WHERE user_id = ?;
-    `;
-    const [user] = await db.pool.query(query, [userId]);
+   
+    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
+    const club = clubSettingsResult;
 
-    if (user.length > 0) {
-      res.render('/accountdetails', { account: user });
-    } else {
-      res.status(404).send('User not found');
-    }
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user');
+    const account = accountSettingsResult;
+
+    
+    res.render('pages/3.5 UserHauptseite/accountdetails.ejs', {
+      account,
+      club,
+      errorMessage: '', // Example error message
+      additionalError: '', // Another error message
+    });
+    
   } catch (error) {
-    console.error("Error retrieving user:", error);
-    res.status(500).send("Internal Server Error");
+    console.error(error);
+    res.status(500).send('Internal Server Error');
   }
 });
+
 
 
 ////////////////////////////////////////////////////////////////////////////
