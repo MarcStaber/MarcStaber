@@ -1,0 +1,186 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.column {
+    float: left;
+    width: 10%;
+    padding: 0;
+}
+
+.columnText {
+    float: left;
+    text-align: center;
+    width: 79.5%;
+    padding-left: 0;
+    margin-left: 1.5%;
+}
+
+.topnav {
+    overflow: hidden;
+    background-color: #8eb967;
+    width: 100%;
+    display: flex; /* Use flexbox to manage the layout */
+}
+
+.topnav a {
+    flex: 1; /* Each link occupies one-third of the available space */
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    text-decoration: none;
+    font-size: 17px;
+    background-color: #8eb967;
+    border: 2.5px solid black; /* Border style */
+}
+
+.topnav a:hover {
+    background-color: #64991c;
+    color: white;
+}
+
+.topnav a.active {
+    background-color: #64991c;
+    color: white;
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    background-color: rgb(70, 95, 153);
+}
+
+.form-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    margin-top: 20px;
+}
+
+form {
+    max-width: 600px;
+    width: 100%;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #4863a2;
+    border-radius: 5px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4863a2;
+    text-align: left;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
+button {
+    background-color: #8eb967;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+button:hover {
+    background-color: #64991c;
+}
+
+button a {
+    text-decoration: none;
+    color: white;
+}
+
+.return-link, a {
+    display: block;
+    text-align: left;
+    margin-top: 15px;
+    color: #4863a2;
+    text-decoration: none;
+}
+
+.return-link:hover, a:hover {
+    text-decoration: underline;
+}
+
+.input-file {
+    display: inline-block;
+    background-color: #8eb967;
+    color: #4863a2;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.input-file:hover {
+    background-color: #64991c;
+}
+
+.file-input-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4863a2;
+    text-align: left;
+}
+
+.file-input-label span {
+    color: #4863a2;
+}
+
+.mainText {
+    font-size: 40px;
+    font-weight: bold;
+    color: white;
+}
+
+/* Style for the "Browse" button to look like the "Speichern" button */
+.browse-button {
+    display: inline-block;
+    background-color: #8eb967;
+    color: white;
+    padding: 10px 20px;  /* same padding as submit button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.browse-button:hover {
+    background-color: #64991c;  /* similar hover effect as the submit button */
+}
+
+/* Original style for the submit button */
+button {
+    background-color: #8eb967;
+    color: white;
+    padding: 10px 20px;  /* same padding as the browse button */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #64991c;  /* similar hover effect */
+}
+
+.password-toggle {
+    display: flex;
+    align-items: center; /* Aligns items vertically */
+}
+
+.password-toggle input {
+    margin-right: 8px; /* Adjust space between checkbox and label */
+}

@@ -6,6 +6,10 @@ const Reservation_type = require("./models/Reservation_type");
 const Court_reservation = require("./models/Court_reservation");
 
 const bodyParser = require('body-parser');
+
+
+
+
 const express = require('express');
 var cookieParser = require('cookie-parser');
 var path = require('path');
@@ -172,8 +176,9 @@ app.get('/adminpage', async function (req, res) {
 //                             Vereinsverwaltung (save data)
 ////////////////////////////////////////////////////////////////////////////
 app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
-  const { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts } = req.body;
-  // Replace the 'hardcode' fields with the HTML fields from the form
+  const 
+  { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts } = req.body;
+  
   const clubData = [
     { id: 1, significance: 'Vereinsname', characteristic: clubMainTitle },
     { id: 2, significance: 'Postleitzahl', characteristic: '7574' },
@@ -461,60 +466,76 @@ app.get('/usermain', async function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 //                             B E N U T Z E R ACCOUNTDETAILS 
 ////////////////////////////////////////////////////////////////////////////
-//Muss noch in User details und Accountdetails umgeändert!!!
 
-app.get('/accountdetails', async function (req, res) {
+
+  app.get('/accountdetails', async (req, res) => {
   try {
-    /// Fetch club settings data from the database 
-
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
-    const club = clubSettingsResult;
-
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = 3'); //[req.session.user_id]);
     
+    // Ensure data exists before attempting to use it
+    if (accountSettingsResult.length === 0) {
+      return res.status(404).send('User not found');
+    }
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user');
-    const account = accountSettingsResult;
-
-    
     res.render('pages/3.5 UserHauptseite/accountdetails.ejs', {
-      account,
-      club,
-      errorMessage: '', // Example error message
-      additionalError: '', // Another error message
+      account: accountSettingsResult,
+      club: clubSettingsResult,
+      errorMessage: '',
+      additionalError: '',
     });
     
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching account details:', error);
     res.status(500).send('Internal Server Error');
   }
 });
 
+
 ////////////////////////////////////////////////////////////////////////////
-//                             B E N U T Z E R ACCOUNTDETAILS SPEICHERN
+//                             Accountdetails (speichern) 
 ////////////////////////////////////////////////////////////////////////////
 
-app.get('/saveAccountdetails', async function (req, res) {
+//Funktioniert noch nicht nicht!!!!!
+app.post('/saveaccountdetails', async (req, res) => {
   try {
-   
-    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
-    const club = clubSettingsResult;
+    // Extract the necessary data from the request body
+    const {
+      firstName,
+      lastName,
+      userEmail,
+      userPhoneNumber,
+      userAddress,
+      userHouseNumber,
+      userZip,
+      userCity,
+      userPassword,
+    } = req.body;
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user');
-    const account = accountSettingsResult;
+    const userId = 3; 
 
-    
-    res.render('pages/3.5 UserHauptseite/accountdetails.ejs', {
-      account,
-      club,
-      errorMessage: '', // Example error message
-      additionalError: '', // Another error message
-    });
-    
+    // Update the user details in the database
+    const updateQuery = `
+      UPDATE user
+      SET first_name = ?, last_name = ?, email_address = ?, telephone_number = ?, street = ?, house_number = ?, zip_code = ?, city = ?, password = ?
+      WHERE user_id = ?;
+    `;
+
+    await db.pool.query(
+      updateQuery,
+      [firstName, lastName, userEmail, userPhoneNumber, userAddress, userHouseNumber, userZip, userCity, userPassword, userId]
+    );
+
+    console.log("All data saved successfully!");
+    res.redirect("/accountdetails"); // Redirect to another page after successful update
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error saving data:", error);
+    res.status(500).send("Internal Server Error");
   }
 });
+
+
+
 
 
 

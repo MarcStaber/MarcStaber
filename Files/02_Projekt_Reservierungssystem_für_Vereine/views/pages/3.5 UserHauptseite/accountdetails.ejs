@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit Club Settings</title>
   <link rel="stylesheet" type="text/css" href="/public/admin/admin.css" />
-  <link rel="stylesheet" type="text/css" href="/css/pages/06 AdminHauptseite/clubsettings.css">
+  <link rel="stylesheet" type="text/css" href="/css/pages/3.5 UserHauptseite/accountdetails.css">
+  
   <script src="https://kit.fontawesome.com/24eb8f8898.js" crossorigin="anonymous"></script>
 </head>
 
@@ -68,7 +69,7 @@
 
 
   <% if (account && account.length > 0) { %>
-    <form action="/saveAccountdetails" method="post" enctype="multipart/form-data">
+    <form action="/saveaccountdetails" method="post" enctype="multipart/form-data">
       <div class="form-group">
         <label for="firstName">Vorname</label>
         <input type="text" id="firstName" name="firstName" value="<%= account[0].first_name %>">
@@ -119,10 +120,11 @@
         <input type="password" id="confirmPassword" name="confirmPassword" oninput="validatePassword()">
     </div>
 
-    <div class="form-group">
-        <input type="checkbox" id="showPassword" onchange="toggleShowPassword()">
-        <label for="showPassword">Passwort anzeigen</label>
-    </div>
+    <div class="form-group password-toggle">
+      <label for="showPassword">Passwort anzeigen</label>
+      <input type="checkbox" id="showPassword" onchange="toggleShowPassword()">
+  </div>
+  
   
       <button type="submit" id="saveButton" disabled>Änderungen speichern</button>
     </form>

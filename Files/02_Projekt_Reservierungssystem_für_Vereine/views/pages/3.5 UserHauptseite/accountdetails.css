@@ -5,6 +5,13 @@
     padding: 0;
 }
 
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
 .column {
     float: left;
     width: 10%;
@@ -141,109 +148,47 @@ button:hover {
     border: 2.5px solid black; /* Border style */
 }
 
-
-
-
-#calendar {
-    background-color: transparent !important;
-    width: 100%; /* Adjust the width as needed */
-    height: 700px; /* Adjust the height as needed */
-    font-size: 20px; /* Adjust the font size as needed */
-    color: black;
-}
-
-
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-#calendar {
-    background-color: transparent !important;
+form {
+    max-width: 600px;
     width: 100%;
-    height: 700px;
-    font-size: 20px;
-    color: black;
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #4863a2;
+    border-radius: 5px;
 }
-
-#calendar .fc-toolbar-title {
-    text-align: center !important;
-}
-
-.fc-header-toolbar,
-.fc-footer-toolbar {
-    color: black;
-    text-align: center;
-}
-
-.fc-button {
-    background-color: #8eb967;
-    color: black;
-    border-color: #8eb967;
-}
-
-.fc-button:hover {
-    background-color: #64991c;
-    border-color: #64991c;
-}
-
-.fc-toolbar-title {
-    text-align: center !important;
-}
-
-.fc-toolbar.fc-header-toolbar {
+.form-container {
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
+    margin-top: 20px;
 }
 
-.fc-button-group {
-    display: flex;
-    flex-wrap: nowrap;
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #4863a2;
+    text-align: left;
 }
 
-.fc-button {
-    background-color: #8eb967;
-    color: black;
-    border-color: #8eb967;
-    padding: 5px 10px; /* Adjust padding as needed */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
 }
 
-.fc-left,
-.fc-center,
-.fc-right {
-    flex: 1;
+.password-toggle {
+    display: flex; 
+    align-items: center; 
 }
 
-.fc--button.fc-button.fc-button-primary {
-    display: none;
+.password-toggle label {
+    margin-right: 8px; 
+    white-space: nowrap; 
 }
 
-.mainText {
-    color: white;
+.password-toggle input {
+    margin-left: 0; 
+    padding: 0; 
 }
-
-.fc-button.active-button {
-    
-    background-color: #1a252f
-    
-}
-
-.fc-button-active-bg-color {
-    background-color: #1a252f;
-}
-
-.fc-event-dot.platzreservierung-event {
-    background-color: blue !important; /* Set background color to red */
-}
-
-/* Custom background color for events with description "Training" */
-.red-background {
-    background-color: red !important;
-}
-
-
-
-
