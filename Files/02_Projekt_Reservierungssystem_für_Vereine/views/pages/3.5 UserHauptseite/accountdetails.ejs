@@ -69,7 +69,7 @@
 
 
   <% if (account && account.length > 0) { %>
-    <form action="/saveaccountdetails" method="post" enctype="multipart/form-data">
+    <form action="/saveaccountdetails/<%=account[0].user_id%>" method="post" enctype="application/x-www-form-urlencoded">
       <div class="form-group">
         <label for="firstName">Vorname</label>
         <input type="text" id="firstName" name="firstName" value="<%= account[0].first_name %>">

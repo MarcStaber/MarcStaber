@@ -471,7 +471,11 @@ app.get('/usermain', async function (req, res) {
   app.get('/accountdetails', async (req, res) => {
   try {
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = 3'); //[req.session.user_id]);
+
+    //Change hardcoded user_id to session_id, hardcoded for testing  //[req.session.user_id]);
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = 1'); 
+    
+    
     
     // Ensure data exists before attempting to use it
     if (accountSettingsResult.length === 0) {
@@ -496,10 +500,14 @@ app.get('/usermain', async function (req, res) {
 //                             Accountdetails (speichern) 
 ////////////////////////////////////////////////////////////////////////////
 
-//Funktioniert noch nicht nicht!!!!!
-app.post('/saveaccountdetails', async (req, res) => {
+app.post('/saveaccountdetails/:user_id', async (req, res) => {
+  
+
+    
+    console.log(req.body);
+    
   try {
-    // Extract the necessary data from the request body
+    
     const {
       firstName,
       lastName,
@@ -509,26 +517,70 @@ app.post('/saveaccountdetails', async (req, res) => {
       userHouseNumber,
       userZip,
       userCity,
-      userPassword,
+      userPassword
     } = req.body;
 
-    const userId = 3; 
+    
+    
+    const userData = {
+      first_name: firstName,
+      last_name: lastName,
+      email_address: userEmail,
+      telephone_number: userPhoneNumber,
+      street: userAddress,
+      house_number: userHouseNumber,
+      zip_code: userZip,
+      city: userCity,
+      password: userPassword,
+      user_id: req.params.user_id
+    };
+    
+    
+   
+    if (!firstName || !lastName || !userEmail ||!userPhoneNumber || !userAddress || !userHouseNumber || !userZip || !userCity || !userPassword) {
+      let errorMessageUser = 'Those fields cannot be empty!';
+      return res.status(400).send(errorMessageUser); 
+    }
 
-    // Update the user details in the database
-    const updateQuery = `
-      UPDATE user
-      SET first_name = ?, last_name = ?, email_address = ?, telephone_number = ?, street = ?, house_number = ?, zip_code = ?, city = ?, password = ?
-      WHERE user_id = ?;
-    `;
+    
+    try {
+      // Improved error handling with specific catches
+      const userQuery = `
+        UPDATE user
+        SET first_name = ?, last_name = ?, email_address = ?, telephone_number = ?,
+            street = ?, house_number = ?, zip_code = ?, city = ?, password = ?
+        WHERE user_id = ?;
+      `;
+      
+      await db.pool.query(userQuery, 
+        [userData.first_name, 
+         userData.last_name, 
+         userData.email_address, 
+         userData.telephone_number, 
+         userData.street,
+         userData.house_number,
+         userData.zip_code,
+         userData.city,
+         userData.password,
+         userData.user_id,
+        ])
+        .catch(connectionError => {
+          console.error("Error connecting to database:", connectionError);
+          res.status(500).send("Internal Server Error (Database Connection)");
+        })
+        .catch(queryError => {
+          console.error("Error in SQL query:", queryError);
+          res.status(500).send("Internal Server Error (SQL Query)");
+        });
 
-    await db.pool.query(
-      updateQuery,
-      [firstName, lastName, userEmail, userPhoneNumber, userAddress, userHouseNumber, userZip, userCity, userPassword, userId]
-    );
+      console.log("All data saved successfully!");
+      res.redirect("/accountdetails"); 
 
-    console.log("All data saved successfully!");
-    res.redirect("/accountdetails"); // Redirect to another page after successful update
-  } catch (error) {
+    } catch (error) {
+      console.error("Unexpected error saving data:", error);
+      res.status(500).send("Internal Server Error");
+    }
+  } catch (error) {  
     console.error("Error saving data:", error);
     res.status(500).send("Internal Server Error");
   }
