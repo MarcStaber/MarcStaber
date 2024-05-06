@@ -43,8 +43,9 @@
     <a href="/">Platzhalter</a>
 </div>
 
-<div class="addEventButton" id="addEvent">
-    <a href="/event">Hier klicken um zu reservieren!</a>
+
+<div class="addEventButton">
+    <a href="#" id="addEventButton">Hier klicken um zu reservieren!</a>
 </div>
 
 <div id="calendar"></div>
@@ -52,99 +53,94 @@
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js'></script>
 <script>
 
-document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'timeGridWeek', // Set initial view to timeGridWeek
-        firstDay: 1,
-        fixedWeekCount: true,
-        slotDuration: '00:30:00', // Adjust slot duration as needed
-        slotLabelInterval: '01:00', // Show hour labels every hour
-        slotMinTime: '07:00:00',
-        slotMaxTime: '24:00:00',
-        snapDuration: '00:15:00',
-        slotLabelFormat: 
-        { hour: '2-digit', 
-        minute: '2-digit', 
-        hour12: false,
-        omitZeroMinute: false },
-        allDaySlot: false, // Hide all-day slot
-        headerToolbar: {
-            left: 'prev,next today, myCustomButton1,myCustomButton2',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay',
-        },
-        customButtons: {
-            myCustomButton1: {
-                text: 'Platz 1',
-                click: function() {
-                    // Handle button click event
-                    console.log('Button 1 clicked');
-                }
+    function getCommonCalendarConfig(events = []) {
+        return {
+            initialView: 'timeGridWeek',
+            firstDay: 1,
+            fixedWeekCount: true,
+            slotDuration: '00:30:00',
+            slotLabelInterval: '01:00',
+            slotMinTime: '07:00:00',
+            slotMaxTime: '24:00:00',
+            snapDuration: '00:15:00',
+            slotLabelFormat: {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+                omitZeroMinute: false,
             },
-            myCustomButton2: {
-                text: 'Platz 2',
-                click: function() {
-                    // Handle button click event
-                    console.log('Button 2 clicked');
-                }
-            }
-        },
-        buttonClassNames: {
-            myCustomButton1: 'active-button' // Add class 'active-button' when myCustomButton1 is active
-        },
-
-        locale: 'de', // Set locale to German (change as needed)
-        dayHeaderFormat: {
-            weekday: 'long', // Display full weekday name (e.g., Monday)
-            month: 'numeric', // Display numeric month (e.g., 01 for January)
-            day: 'numeric', // Display numeric day of the month (e.g., 01)
-            year: 'numeric' // Display numeric year
-        },
-        views: {
-            dayGridMonth: {
-                dayHeaderFormat: { weekday: 'long' } // Display no day headers in month view
-            }
-        },
-        buttonText: {
-            today: 'Heute',
-            week: 'Woche',
-            day: 'Tag',
-            month: 'Monat' // Custom text for month button
-        },
-        
-        events: [
-            {
-                title: 'Max Mustermann',
-                description: 'Platzreservierung',
-                start: '2024-04-04T10:00:00', // Start time of the event
-                end: '2024-04-04T12:00:00' // End time of the event
+            allDaySlot: false,
+            events: events,
+            headerToolbar: {
+                left: 'prev,next today, myCustomButton1,myCustomButton2',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay',
             },
-
-           
-        ],
-        eventContent: function(arg) {
-            return {
-                html: '<b>' + arg.timeText + '</b><br>' + '<b>' + arg.event.title + '</b><br>' + arg.event.extendedProps.description
-            };
-        },
-
+            customButtons: {
+                myCustomButton1: {
+                    text: 'Platz 1',
+                    click: function() {
+                        console.log('Button 1 clicked');
+                    }
+                },
+                myCustomButton2: {
+                    text: 'Platz 2',
+                    click: function() {
+                        console.log('Button 2 clicked');
+                    }
+                },
+            },
+            locale: 'de',
+            dayHeaderFormat: {
+                weekday: 'long',
+                month: 'numeric',
+                day: 'numeric',
+                year: 'numeric',
+            },
+            views: {
+                dayGridMonth: {
+                    dayHeaderFormat: { weekday: 'long' },
+                },
+            },
+            buttonText: {
+                today: 'Heute',
+                week: 'Woche',
+                day: 'Tag',
+                month: 'Monat',
+            },
+        };
+    }
+       
     
+    var calendar;
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+    
+        var eventData = []; // Initialize with any existing events or empty
+        var calendarConfig = getCommonCalendarConfig(eventData);
+    
+        // Initialize the calendar once and store the reference
+        calendar = new FullCalendar.Calendar(calendarEl, calendarConfig);
+        calendar.render();
     });
     
-    calendar.render();
-});
-
-
-
-
-
-
-
-
-
-
-</script>
+    // Function to add new events to the existing calendar
+    function addNewEvent(eventData) {
+        if (calendar) { // Ensure the calendar instance is defined
+            calendar.addEvent(eventData); // Add the new event to the existing calendar
+        } else {
+            console.error("Calendar instance not found");
+        }
+    }
+    
+    document.getElementById('addEventButton').addEventListener('click', function(event) {
+        event.preventDefault(); // Prevent default anchor behavior
+        window.open('/event', 'AddEvent', 'width=400, height=600'); // Open a popup for adding events
+    });
+    
+    
+    </script>
 
 </body>
 </html>

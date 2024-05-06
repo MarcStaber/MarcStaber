@@ -1,78 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Add Event</title>
-<link href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/main.css" rel="stylesheet">
-<link rel="stylesheet" href="/css/pages/3.5 UserHauptseite/addEvent.css" />
-<style>
-    form {
-        display: flex;
-        flex-direction: column;
-        max-width: 300px;
-    }
-    label {
-        margin-bottom: 5px;
-    }
-    input[type="text"],
-    input[type="submit"] {
-        margin-bottom: 10px;
-        padding: 5px;
-    }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Event</title>
+    
+    <style>
+        /* Simple styling for the form */
+        .form-container {
+            padding: 20px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .form-container label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .form-container input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        .form-container button {
+            padding: 10px 20px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
 
-<form action="/addEvent" method="post" id="eventForm">
-    <label for="fullName">Vor und Nachname:</label>
-    <input type="text" id="fullName" name="fullName" required>
-    <label for="eventTitle">Eventbeschreibung:</label>
-    <input type="text" id="eventTitle" name="eventTitle" required>
-    <label for="eventStart">Eventbeginn:</label>
-    <input type="datetime-local" id="eventStart" name="eventStart" required>
-    <label for="eventEnd">Eventende:</label>
-    <input type="datetime-local" id="eventEnd" name="eventEnd" required>
-    <input type="submit" value="Reservierung hinzufügen">
-</form>
-
-<div id="calendar"></div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.10.0/main.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="calendar.js"></script>
+<div class="form-container">
+    <h2>Erstelle eine Reservierung</h2>
+    <form id="eventForm" onsubmit="submitEvent(); return false;">
+        <label for="fullName">Vor und Nachname:</label>
+        <input type="text" id="fullName" name="fullName" required>
+        
+        <label for="eventTitle">Eventbeschreibung:</label>
+        <input type="text" id="eventTitle" name="eventTitle" required>
+        
+        <label for="eventStart">Eventbeginn:</label>
+        <input type="datetime-local" id="eventStart" name="eventStart" required>
+        
+        <label for="eventEnd">Eventende:</label>
+        <input type="datetime-local" id="eventEnd" name="eventEnd" required>
+        
+        <input type="submit" value="Reservierung hinzufügen">
+    </form>
+</div>
 
 <script>
-    // Function to add event to the calendar
-    function addEvent(formData) {
-        var fullName = formData.get('fullName');
-        var eventTitle = formData.get('eventTitle');
-        var eventStart = formData.get('eventStart');
-        var eventEnd = formData.get('eventEnd');
+// Submit the form and return to the reservation page
+function submitEvent() {
+    // Collect the correct field values
+    var fullName = document.getElementById("fullName").value;
+    var eventTitle = document.getElementById("eventTitle").value;
+    var eventStart = document.getElementById("eventStart").value;
+    var eventEnd = document.getElementById("eventEnd").value;
 
-        // Add event to calendar
-        calendar.addEvent({
-            title: fullName + ' - ' + eventTitle, // Combine full name and event title
-            start: eventStart,
-            end: eventEnd,
-            allDay: false // Assuming events are not all-day by default
-        });
+    // Prepare event data object for FullCalendar
+    var eventData = {
+        title: fullName + " - " + eventTitle, // Compose event title
+        start: eventStart,
+        end: eventEnd,
+    };
 
-        // Rerender the calendar to reflect the changes
-        calendar.render();
+    // Send data to the parent window and close the popup
+    if (window.opener && typeof window.opener.addNewEvent === "function") {
+        window.opener.addNewEvent(eventData); // Send data to the parent window
     }
-
-    // Handle form submission
-    document.getElementById('eventForm').addEventListener('submit', function(event) {
-        event.preventDefault(); // Prevent default form submission
-        var formData = new FormData(this); // Get form data
-
-        // Add event using the addEvent function
-        addEvent(formData);
-
-        // Reset form
-        this.reset();
-    });
+    
+    window.close(); // Close the popup
+}
 </script>
+
 </body>
 </html>

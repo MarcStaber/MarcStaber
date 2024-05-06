@@ -99,7 +99,7 @@ button:hover {
 
 
 
-.addEventButton a {
+.addEventButton {
     border-width: 2.5px;
     border-color: black;
     border-style: solid;
@@ -114,6 +114,10 @@ button:hover {
     text-decoration: none; /* Remove underline */
     text-align: center; /* Center text */
     line-height: 2; /* Adjust line height for vertical centering */
+    color: white /* Set text color */
+}
+
+.addEventButton a {
     color: white /* Set text color */
 }
 

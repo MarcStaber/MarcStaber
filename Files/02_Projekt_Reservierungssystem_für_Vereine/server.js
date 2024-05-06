@@ -154,6 +154,9 @@ app.get('/adminpage', async function (req, res) {
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 1');
+    const account = accountSettingsResult;
+
     // Fetch user data with pagination
     const currentPage = req.query.page || 1;
     const offset = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -165,7 +168,13 @@ app.get('/adminpage', async function (req, res) {
     const totalUsers = Number(countResult[0].count);
     const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
 
-    res.render('pages/06 AdminHauptseite/usermanage.ejs', { users: results, club, totalPages, currentPage });
+    res.render('pages/06 AdminHauptseite/usermanage.ejs', { 
+      users: results, 
+      club, 
+      totalPages, 
+      currentPage,
+      account 
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -226,8 +235,14 @@ app.get('/vereinverwaltung', async function (req, res) {
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 1');
+    const account = accountSettingsResult;
+
     // Render the 'clubsettings' view and pass the data
-    res.render('pages/06 AdminHauptseite/clubsettings.ejs', { club, errorMessage: '' });
+    res.render('pages/06 AdminHauptseite/clubsettings.ejs', { club,
+       errorMessage: '',
+       account 
+      });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -243,8 +258,17 @@ app.get('/reservierung', async function (req, res) {
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
-    // Render the 'clubsettings' view and pass the data
-    res.render('pages/06 AdminHauptseite/reservation.ejs', { club, errorMessage: '' });
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 1');
+    const account = accountSettingsResult;
+
+   
+    res.render('pages/06 AdminHauptseite/reservation.ejs', { 
+
+      account,
+      club,
+      errorMessage: '', // Example error message
+      additionalError: '', // Another error message
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -426,7 +450,7 @@ app.get('/event', async function (req, res) {
 //                             ADD EVENT Admin
 ////////////////////////////////////////////////////////////////////////////
 
-app.get('/event', async function (req, res) {
+app.get('/eventAdmin', async function (req, res) {
   try {
     
     res.render('pages/06 AdminHauptseite/addEvent.ejs', { errorMessage: null });
@@ -436,6 +460,34 @@ app.get('/event', async function (req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+//Funktioniert nicht!
+app.post('/eventAdmin', async (req, res) => {
+  try {
+    const { fullName, eventTitle, eventStart, eventEnd } = req.body;
+
+    // Placeholders
+    const userId = 1; // Could be derived from the logged-in user's session
+    const courtId = 1; // Determine based on form input or other logic
+    const reservationTypeId = 1; // Determine based on form input or other logic
+
+    // Insert into the court_reservation table
+    await db.query(
+      'INSERT INTO court_reservation (user_id, court_id, date_time_from, date_time_to, reservation_type_id, notice) VALUES (?, ?, ?, ?, ?, ?)',
+      [userId, courtId, eventStart, eventEnd, reservationTypeId, eventTitle]
+    );
+
+    // Send a response indicating success
+    res.status(200).send("Reservation successfully added");
+
+  } catch (error) {
+    console.error("Error while inserting into court_reservation:", error);
+    res.status(500).json({ errorMessage: "Failed to add reservation" });
+  }
+});
+
+
 
 ////////////////////////////////////////////////////////////////////////////
 //                             B E N U T Z E R H A U P T S E I T E 
