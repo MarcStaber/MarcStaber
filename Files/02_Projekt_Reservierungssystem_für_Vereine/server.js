@@ -41,7 +41,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false }
 }));
-//app.use(emailValidator());
+
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
@@ -71,9 +71,7 @@ const requireAuth = (req, res, next) => {
   }
 }
 
-// function validateString(a, b) {
 
-// }
 
 
 
@@ -108,7 +106,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 //                             I N D E X 
 ////////////////////////////////////////////////////////////////////////////
 // TEST ONLY: index page
-// Fehlt Seite
+
 app.get('/', function (req, res) {
 
   Court.findAll().then(court_list => {
@@ -117,20 +115,6 @@ app.get('/', function (req, res) {
     });
   });
 
-
-  //const json = JSON.stringify(court_list);
-  //console.log( json );
-  /*
-  
-    for (var i = 0; i < court_list.length; i++){
-      console.log( court_list[i].toString() );
-    }
-    */
-  /*
-  court_list.forEach(element => {
-    console.log( element.toString() );
-  });
-*/
 
 });
 
@@ -147,7 +131,7 @@ app.get('/about', function (req, res) {
 //                             A D M I N P A G E 
 ////////////////////////////////////////////////////////////////////////////
 app.get('/adminpage', async function (req, res) {
-  //res.render('pages/07 Adminseite (Vereinsdaten, Userverwaltung)/AdminPage (neu)/views/index.ejs');
+  
   const ITEMS_PER_PAGE = 15;
   try {
     // Fetch club settings data from the database
@@ -184,6 +168,8 @@ app.get('/adminpage', async function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 //                             Vereinsverwaltung (save data)
 ////////////////////////////////////////////////////////////////////////////
+
+//uploaded picture replaces "Logo.png" in the public folder
 app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
   const 
   { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts } = req.body;
@@ -218,7 +204,7 @@ app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
       await db.pool.query(query, [data.characteristic, data.significance]);
     }
     console.log("All data saved successfully!");
-    //res.send("All data saved successfully!");
+    
     res.redirect('/vereinverwaltung')
   } catch (error) {
     console.error("Error saving data:", error);
@@ -278,7 +264,7 @@ app.get('/reservierung', async function (req, res) {
 //                             Benutzer hinzufügen
 ////////////////////////////////////////////////////////////////////////////
 app.get('/add', (req, res) => {
-  // Pass a default null value for errorMessage
+  
   res.render('pages/06 AdminHauptseite/add.ejs', { errorMessage: null });
 });
 
@@ -296,7 +282,7 @@ app.post('/add', async (req, res) => {
     zipCode: req.body.zip_code,
     city: req.body.city,
     country: req.body.country,
-    // Add other fields as needed
+  
   };
 
   // Check if password and confirm_password are not empty
@@ -329,7 +315,7 @@ app.post('/add', async (req, res) => {
     newUser.zipCode,
     newUser.city,
     newUser.country,
-    // Add other values as needed
+    
   ];
 
   try {
@@ -361,7 +347,7 @@ app.get('/edit/:user_id', async (req, res) => {
 app.post('/edit/:user_id', async (req, res) => {
   const userId = req.params.user_id;
 
-  // Flatten the object before updating
+ 
   const updatedUser = {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
@@ -373,7 +359,7 @@ app.post('/edit/:user_id', async (req, res) => {
     zip_code: req.body.zip_code,
     city: req.body.city,
     country: req.body.country,
-    // Add other fields as needed
+    
   };
 
   const sql = `
@@ -468,9 +454,9 @@ app.post('/eventAdmin', async (req, res) => {
     const { fullName, eventTitle, eventStart, eventEnd } = req.body;
 
     // Placeholders
-    const userId = 1; // Could be derived from the logged-in user's session
-    const courtId = 1; // Determine based on form input or other logic
-    const reservationTypeId = 1; // Determine based on form input or other logic
+    const userId = 1; 
+    const courtId = 1; 
+    const reservationTypeId = 1; 
 
     // Insert into the court_reservation table
     await db.query(
@@ -502,12 +488,12 @@ app.get('/usermain', async function (req, res) {
     const accountSettingsResult = await db.pool.query('SELECT * FROM user');
     const account = accountSettingsResult;
 
-    // Render the 'clubsettings' view and pass the data
+    // Render the 'userhauptseite' view and pass the data
     res.render('pages/3.5 UserHauptseite/userhauptseite.ejs', { 
       account,
       club,
-      errorMessage: '', // Example error message
-      additionalError: '', // Another error message
+      errorMessage: '', 
+      additionalError: '', 
     });
   } catch (error) {
     console.error(error);
@@ -554,9 +540,6 @@ app.get('/usermain', async function (req, res) {
 
 app.post('/saveaccountdetails/:user_id', async (req, res) => {
   
-
-    
-    console.log(req.body);
     
   try {
     
@@ -596,7 +579,7 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
 
     
     try {
-      // Improved error handling with specific catches
+      
       const userQuery = `
         UPDATE user
         SET first_name = ?, last_name = ?, email_address = ?, telephone_number = ?,
