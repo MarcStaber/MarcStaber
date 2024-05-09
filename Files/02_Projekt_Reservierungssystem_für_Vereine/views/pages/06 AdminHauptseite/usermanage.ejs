@@ -2,41 +2,35 @@
 <html lang="en">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reservierungsseite für Vereine</title>
-  <link rel="stylesheet" type="text/css" href="/css/pages/06 AdminHauptseite/admin.css"> />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetUsermanage.css">
+  <script src="https://kit.fontawesome.com/24eb8f8898.js" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-  <div class="row" style="background-color: rgb(70, 95, 153); width: 100%;">
-    <div class="column">
-      <img src="/public/Logo.png" alt="Club Image" width="150" height="150">
-    </div>
 
-    <div class="columnText">
-      <h1 name="club_significance ">
-        <%= club[0].characteristic %>
-      </h1>
-      <p name="club_characteristic">
-        <%= club[6].characteristic %>
-      </p>
-      <p name"">
-        <%= account[0].first_name %>
-      </p>
+  <header class="mainHeader" id="Start">
+    <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+    <flexitem></flexitem>
+    <div class="mainHeader1">
+      <h1>   <%= club[0].characteristic %></h1>
+      <p> <%= club[6].characteristic %></p>
     </div>
+    <flexitem>
+      <i class="fa-sharp fa-solid fa-user"></i>
+      <p><%= account[0].first_name %></p>
+    </flexitem>
+    <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+  </header>
 
-    <div class="column">
-      <img src="/public/Logo.png" alt="Club Image" width="150" height="150">
-    </div>
-  </div>
-
-  <div class="topnav">
-    <a href="/vereinverwaltung">  Vereinverwaltung</a>
-    <a href="/reservierung"> Reservierung</a>
+  <nav class="topnav" id="Top">
+    <a href="/vereinverwaltung"> Vereinverwaltung</a>
+    <a href="reservierung"> Reservierung</a>
     <a class="active" href="/adminpage"> Benutzerverwaltung</a>
-    
-  </div>
+  </nav>
 
 
   <section class="mainPart" id="Account">

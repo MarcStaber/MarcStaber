@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetVereinverwaltung.css">
+  <script src="https://kit.fontawesome.com/24eb8f8898.js" crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+  <header class="mainHeader" id="Start">
+    <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+    <flexitem></flexitem>
+    <div class="mainHeader1">
+      <h1>   <%= club[0].characteristic %></h1>
+      <p> <%= club[6].characteristic %></p>
+    </div>
+    <flexitem>
+      <i class="fa-sharp fa-solid fa-user"></i>
+      <p><%= account[0].first_name %></p>
+    </flexitem>
+    <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+  </header>
+
+  <nav class="topnav" id="Top">
+    <a href="/accountdetails">Accountdetails</a>
+    <a id="reservationBtn" href="/usermain"> Reservierung</a>
+    <a class="active" href="/clubcontact">Kontakt</a>
+</nav>
+
+  <section class="mainPart" id="clubinfo">
+    <article class="clubForm">
+  <% if (club) { %>
+    <form action="/saveclubsettings" method="post" enctype="multipart/form-data">
+      <div class="form-group">
+        <p><%= club[0].characteristic %></p>
+        <br>
+        <p><%= club[2].characteristic %></p>
+        <br>
+        <p><%= club[6].characteristic %></p>
+        <br>
+        <p><%= club[7].characteristic %></p>
+      </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+      <!-- Display error message if exists -->
+      <% if (errorMessage) { %>
+        <p style="color: red;">
+          <%= errorMessage %>
+        </p>
+        <% } %>
+
+         
+    </form>
+    </article>
+  </section>
+
+
+  
+
+    <% } else { %>
+      <p>No club settings found.</p>
+      <% } %>
+  
+  
+</body>
+
+</html>

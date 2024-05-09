@@ -597,7 +597,7 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
          userData.zip_code,
          userData.city,
          userData.password,
-         userData.user_id,
+         userData.user_id
         ])
         .catch(connectionError => {
           console.error("Error connecting to database:", connectionError);
@@ -629,10 +629,10 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //                             B E N U T Z E R H A U P T S E I T E 
 ////////////////////////////////////////////////////////////////////////////
-/*app.get('/benutzerhauptseite', function (req, res) {
+app.get('/benutzerhauptseite', function (req, res) {
   res.render('pages/03 UserHauptseite/Projekt_BenutzerHauptSeite.ejs');
 });
-*/
+
 ////////////////////////////////////////////////////////////////////////////
 //                             U S E R A C C O U N T 
 ////////////////////////////////////////////////////////////////////////////
@@ -643,8 +643,24 @@ app.get('/useraccount', function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 //                             U S E R K O N T A K T S E I T E 
 ////////////////////////////////////////////////////////////////////////////
-app.get('/userkontaktseite', function (req, res) {
-  res.render('pages/05 UserKontaktSeite/Muster.ejs');
+app.get('/clubcontact', async function (req, res) {
+  try {
+    //Fetch club settings data from the database 
+    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
+    const club = clubSettingsResult;
+
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 3');
+    const account = accountSettingsResult;
+
+    // Render the 'clubsettings' view and pass the data
+    res.render('pages/3.5 UserHauptseite/clubcontact.ejs', { club,
+       errorMessage: '',
+       account 
+      });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
 });
 
 ////////////////////////////////////////////////////////////////////////////

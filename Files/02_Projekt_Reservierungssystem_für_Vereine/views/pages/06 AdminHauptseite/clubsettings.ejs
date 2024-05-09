@@ -2,43 +2,38 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Club Settings</title>
-  <link rel="stylesheet" type="text/css" href="/public/admin/admin.css" />
-  <link rel="stylesheet" type="text/css" href="/css/pages/06 AdminHauptseite/clubsettings.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> Reservierungsseite für Vereine </title>
+  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetVereinverwaltung.css">
   <script src="https://kit.fontawesome.com/24eb8f8898.js" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
-  <div class="row">
-    <div class="column">
-      <img src="/public/Logo.png" alt="Club Image" width="150" height="150">
-    </div>
 
-    <div class="columnText">
-      <h1 name="club_significance ">
-        <%= club[0].characteristic %>
-      </h1>
-      <p name="club_characteristic">
-        <%= club[6].characteristic %>
-      </p>
-      <p name"">
-        <%= account[0].first_name %>
-      </p>
+  <header class="mainHeader" id="Start">
+    <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+    <flexitem></flexitem>
+    <div class="mainHeader1">
+      <h1>   <%= club[0].characteristic %></h1>
+      <p> <%= club[6].characteristic %></p>
     </div>
+    <flexitem>
+      <i class="fa-sharp fa-solid fa-user"></i>
+      <p><%= account[0].first_name %></p>
+    </flexitem>
+    <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
+  </header>
 
-    <div class="column">
-      <img src="/public/Logo.png" alt="Club Image" width="150" height="150">
-    </div>
-  </div>
-
-  <div class="topnav">
+  <nav class="topnav" id="Top">
     <a class="active" href="/vereinverwaltung"> Vereinverwaltung</a>
     <a href="reservierung"> Reservierung</a>
     <a href="/adminpage"> Benutzerverwaltung</a>
-  </div>
+  </nav>
 
+  <section class="mainPart" id="clubinfo">
+    <article class="clubForm">
   <% if (club) { %>
     <form action="/saveclubsettings" method="post" enctype="multipart/form-data">
       <div class="form-group">
@@ -58,7 +53,7 @@
 
       <div class="form-group">
         <label for="clubPhoneNumber">Telefonnummer</label>
-        <input type="text" id="clubPhoneNumber" name="clubPhoneNumber" value="<%= club[6].characteristic %>">
+        <input type="text" id="clubPhoneNumber" name="clubPhoneNumber" value="<%= club[5].characteristic %>">
       </div>
 
       <div class="form-group">
@@ -85,12 +80,11 @@
         </p>
         <% } %>
 
-          <button type="submit">Speichern</button>
+          <button class="save-button" type="submit">Speichern</button>
     </form>
+    </article>
+  </section>
 
-
-
-    <a class="returnButton" href="/vereinverwaltung">Zurück zur Benutzerliste</a>
 
     <% } else { %>
       <p>No club settings found.</p>
