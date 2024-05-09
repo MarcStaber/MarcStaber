@@ -622,22 +622,28 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
 });
 
 
+////////////////////////////////////////////////////////////////////////////
+//                            DSGVO
+////////////////////////////////////////////////////////////////////////////
+app.get('/dsgvo', function (req, res) {
+  res.render('pages/Datenschutz.ejs');
+});
 
 
 
 
 ////////////////////////////////////////////////////////////////////////////
-//                             B E N U T Z E R H A U P T S E I T E 
+//                             IMPRESSUM
 ////////////////////////////////////////////////////////////////////////////
-app.get('/benutzerhauptseite', function (req, res) {
-  res.render('pages/03 UserHauptseite/Projekt_BenutzerHauptSeite.ejs');
+app.get('/impressum', function (req, res) {
+  res.render('pages/impressum.ejs');
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//                             U S E R A C C O U N T 
+//                             PWFORGET
 ////////////////////////////////////////////////////////////////////////////
-app.get('/useraccount', function (req, res) {
-  res.render('pages/04 UserAccountSeite/Projekt_UserAccount.ejs');
+app.get('/forgetPW', function (req, res) {
+  res.render('pages/forgetPW.ejs');
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -660,6 +666,21 @@ app.get('/clubcontact', async function (req, res) {
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
+  }
+  if (app.get('/edit/:logout')) 
+    conn.end();
+});
+app.get('/edit/:logout', async (req, res) => {
+  const userId = req.params.user_id;
+  let conn;
+  try {
+    conn = await db.pool.getConnection();
+    const result = await conn.query('SELECT * FROM user WHERE user_id = ?', [userId]);
+    res.render('pages/06 AdminHauptseite/edit.ejs', { user: result[0] });
+  } catch (error) {
+    throw error;
+  } finally {
+    if (conn) conn.end();
   }
 });
 

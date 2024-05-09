@@ -460,7 +460,16 @@ a[href="/add"] {
 }
 
 
+.standardFooter {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
+.standardFooter ul{
+  margin-top:-15px;
+}
 
  
     

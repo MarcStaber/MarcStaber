@@ -325,7 +325,17 @@ h1+p{margin-bottom: 25px; font-weight: bold;}
 
 
 
-
+  .standardFooter {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .standardFooter ul{
+    margin-top:-15px;
+  }
+  
 
 
  

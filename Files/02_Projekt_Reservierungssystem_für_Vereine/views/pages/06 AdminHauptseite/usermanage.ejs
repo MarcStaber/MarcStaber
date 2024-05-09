@@ -14,14 +14,14 @@
 
   <header class="mainHeader" id="Start">
     <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
-    <flexitem></flexitem>
+    <flexitem>      
+      <i class="fa-sharp fa-solid fa-user"></i>
+      <p><%= account[0].first_name %></p></flexitem>
     <div class="mainHeader1">
       <h1>   <%= club[0].characteristic %></h1>
-      <p> <%= club[6].characteristic %></p>
     </div>
     <flexitem>
-      <i class="fa-sharp fa-solid fa-user"></i>
-      <p><%= account[0].first_name %></p>
+        <a href="login"><button>Logout</button></a>
     </flexitem>
     <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
   </header>
@@ -116,7 +116,8 @@
     </div>
 
     <a href="/add">Benutzer hinzufügen</a>
-
+  </section>
+  <%- include('../../partials/footer'); %>
 </body>
 
 </html>

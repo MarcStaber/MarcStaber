@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title> Reservierungsseite für Vereine </title>
-  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetLogin.css">
+  <link rel="stylesheet" href="http://localhost:3000/static/stylesheetForgetPW.css">
   <link rel="stylesheet1" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"> 
 </head>
 
@@ -34,16 +34,13 @@
   <section class="mainPart" id="Login">
 
     <article>
-      <form class="loginForm" action="/login" method="post">
+      <form class="forgetPWForm" action="/sendNewPW" method="post">
         <p>EMAIL:</p>
         <input type="email" name="email_address" id="email_address" class="form__email" placeholder="E-Mail-Adresse" />
-        <p>PASSWORT:</p>
-        <input type="password" name="password" id="password" class="form__password" placeholder="Passswort" />
         <p></p>
-        <button type="submit" class="form__button">Login</button>
+        <button type="submit" class="form__button">Neues Passwort zusenden</button>
       </form>
       <p id="loginMessageOut" style="color: red"></p>
-      <a href="forgetPW"><button class="form__button">Passwort vergessen</button></a>
     </article>
 
   </section>
