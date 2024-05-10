@@ -21,14 +21,14 @@
       <h1>   <%= club[0].characteristic %></h1>
     </div>
     <flexitem>
-        <a href="login"><button>Logout</button></a>
+      <a href="/logout"><button>Logout</button></a>
     </flexitem>
     <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
   </header>
 
   <nav class="topnav" id="Top">
     <a href="/accountdetails">Accountdetails</a>
-    <a id="reservationBtn" href="/usermain"> Reservierung</a>
+    <a id="reservationBtn" href="/user/:userId/main"> Reservierung</a>
     <a class="active" href="/clubcontact">Kontakt</a>
 </nav>
 
