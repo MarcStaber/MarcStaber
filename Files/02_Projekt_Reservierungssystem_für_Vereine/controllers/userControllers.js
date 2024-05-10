@@ -61,31 +61,7 @@ exports.addUser = async (req, res, next) => {
 
         const result = await db.pool.query(query);
         const new_id = Number(result.insertId);
-        //console.log(result);
-        //console.log("InsertId = " + Number(result.insertId));
-
-
-
-/*
-        // TODO: Constructor verwenden!!!
-        let newUser = new User(
-            result.insertId,
-            req.body.email_address,
-            req.body.first_name,
-            req.body.password,
-            req.body.count_of_false_logins,
-            req.body.blocked_date,
-            req.body.member_date,
-            req.body.telephone_number,
-            req.body.role_id, 
-            req.body.street,
-            req.body.house_number,
-            req.body.zip_code,
-            req.body.city,
-            req.body.country
-        );
-*/
-
+        
         let newUser = {
             user_id: new_id,
             email_address: req.body.email_address,

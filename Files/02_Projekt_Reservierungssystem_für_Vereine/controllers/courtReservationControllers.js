@@ -86,13 +86,13 @@ exports.addCourtReservation = async (req, res, next) => {
             cancel_datetime: req.body.cancel_datetime
         };
         res.status(200).json({data: newCourtReservation, 
-            message: `New Court Reservation "${newReservationType.user_id}
-            " and court_id "${newReservationType.court_id}
-            " and date_time_from "${newReservationType.date_time_from}
-            " and date_time_to "${newReservationType.date_time_to}
-            " and reservation_type_id "${newReservationType.reservation_type_id}
-            " and notice "${newReservationType.notice}
-            " and cancel_datetime "${newReservationType.cancel_datetime}
+            message: `New Court Reservation "${newCourtReservation.user_id}
+            " and court_id "${newCourtReservation.court_id}
+            " and date_time_from "${newCourtReservation.date_time_from}
+            " and date_time_to "${newCourtReservation.date_time_to}
+            " and reservation_type_id "${newCourtReservation.reservation_type_id}
+            " and notice "${newCourtReservation.notice}
+            " and cancel_datetime "${newCourtReservation.cancel_datetime}
             " added`});
     } catch (error) {
         console.log(error);
@@ -118,7 +118,6 @@ exports.updateCourtReservationById = async (req, res, next) => {
                 date_time_from = ${date_time_from},
                 date_time_to = ${date_time_to},
                 reservation_type_id = ${reservation_type_id},
-                reservation_datetime = CURRENT_TIMESTAMP(),
                 notice = ${notice},
                 cancel_datetime = ${cancel_datetime}
             WHERE reservation_number = ${id};
