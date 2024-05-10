@@ -18,6 +18,7 @@ const { query } = require('express-validator');
 const db = require('./db');
 var session = require('express-session');
 const multer = require('multer');
+const { NOTFOUND } = require('dns');
 
 // Set up multer storage
 const storage = multer.diskStorage({
@@ -100,8 +101,19 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use('/css', express.static(path.join(__dirname, 'views')));
 app.use('/public', express.static(path.join(__dirname, 'public')));
+////////////////////////////////////////////////////////////////////////////
+//                            Kontrollpage
+////////////////////////////////////////////////////////////////////////////
+app.get('/controlpage', function (req, res) {
+
+  Court.findAll().then(court_list => {
+    res.render('pages/index', {
+      courts: court_list
+    });
+  });
 
 
+});
 ////////////////////////////////////////////////////////////////////////////
 //                             I N D E X 
 ////////////////////////////////////////////////////////////////////////////
@@ -110,7 +122,7 @@ app.use('/public', express.static(path.join(__dirname, 'public')));
 app.get('/', function (req, res) {
 
   Court.findAll().then(court_list => {
-    res.render('pages/index', {
+    res.render('pages/login', {
       courts: court_list
     });
   });
@@ -127,18 +139,57 @@ app.get('/about', function (req, res) {
   res.render('pages/about');
 });
 
+
+////////////////////////////////////////////////////////////////////////////
+//                             A D M I N (Authentification) 
+////////////////////////////////////////////////////////////////////////////
+
+function checkAdminAccess(req, res, next) {
+  const roleId = req.session.role_id;
+  const isLoggedIn = req.session.logged_in;
+  
+  // Check if user is logged in
+  if (!isLoggedIn) {
+    return res.redirect('/login'); // Redirect to login if not logged in
+  }
+
+  // Allow admin access only
+  if (roleId === 1) {
+    return next(); // Proceed to the next middleware or route handler
+  } else if (roleId === 3) {
+    // Redirect non-admin users to their respective page
+    const userId = req.session.user_id;
+    return res.redirect(`/user/${userId}/main`);
+  } else {
+    return res.status(403).send('Access denied: Admins only'); // Access forbidden for others
+  }
+}
+
+
+
 ////////////////////////////////////////////////////////////////////////////
 //                             A D M I N P A G E 
 ////////////////////////////////////////////////////////////////////////////
-app.get('/adminpage', async function (req, res) {
+app.get('/adminpage', checkAdminAccess, async function (req, res) {
   
+  const roleNames = {
+    1: 'Admin',
+    2: 'Platzwart',
+    3: 'Mitglied',
+    4: 'Gast',
+    5: 'Neuer Benutzer'
+  };
+  
+
+
   const ITEMS_PER_PAGE = 15;
   try {
-    // Fetch club settings data from the database
+    const userId = req.session.user_id;
+
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 1');
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
 
     // Fetch user data with pagination
@@ -157,7 +208,8 @@ app.get('/adminpage', async function (req, res) {
       club, 
       totalPages, 
       currentPage,
-      account 
+      account,
+      roleNames 
     });
   } catch (error) {
     console.error(error);
@@ -170,16 +222,16 @@ app.get('/adminpage', async function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 
 //uploaded picture replaces "Logo.png" in the public folder
-app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
+app.post('/saveclubsettings', checkAdminAccess, upload.single('clubImage'), async (req, res) => {
   const 
-  { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts } = req.body;
+  { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts, clubStreet, clubHousenumber, clubZip } = req.body;
   
   const clubData = [
     { id: 1, significance: 'Vereinsname', characteristic: clubMainTitle },
-    { id: 2, significance: 'Postleitzahl', characteristic: '7574' },
+    { id: 2, significance: 'Postleitzahl', characteristic: clubZip },
     { id: 3, significance: 'Ort', characteristic: clubAddress },
-    { id: 4, significance: 'Straße', characteristic: 'Thermenstraße' },
-    { id: 5, significance: 'Hausnummer', characteristic: '36' },
+    { id: 4, significance: 'Straße', characteristic: clubStreet},
+    { id: 5, significance: 'Hausnummer', characteristic: clubHousenumber},
     { id: 6, significance: 'Telefonnummer', characteristic: clubPhoneNumber },
     { id: 7, significance: 'E-Mail', characteristic: clubEmail },
     { id: 8, significance: 'Webseite', characteristic: 'www.tc-neudauberg.at' },
@@ -189,7 +241,7 @@ app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
  
 
   // Check if required fields are empty or null
-  if (!clubMainTitle || !clubAddress || !clubEmail || !clubPhoneNumber || !clubCourts) {
+  if (!clubMainTitle || !clubAddress || !clubEmail || !clubPhoneNumber || !clubCourts || clubStreet || clubHousenumber || clubZip) {
     const errorMessage = 'All fields must be filled out';
 
   }
@@ -215,13 +267,15 @@ app.post('/saveclubsettings', upload.single('clubImage'), async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //                             Vereinsverwaltung 
 ////////////////////////////////////////////////////////////////////////////
-app.get('/vereinverwaltung', async function (req, res) {
+app.get('/vereinverwaltung', checkAdminAccess, async function (req, res) {
   try {
     /// Fetch club settings data from the database 
+    const userId = req.session.user_id;
+
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 1');
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
 
     // Render the 'clubsettings' view and pass the data
@@ -238,15 +292,16 @@ app.get('/vereinverwaltung', async function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 //                             Kalender (admin)
 ////////////////////////////////////////////////////////////////////////////
-app.get('/reservierung', async function (req, res) {
+app.get('/reservierung', checkAdminAccess, async function (req, res) {
   try {
     /// Fetch club settings data from the database
+    const userId = req.session.user_id;
+
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 1');
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
-
    
     res.render('pages/06 AdminHauptseite/reservation.ejs', { 
 
@@ -269,6 +324,8 @@ app.get('/add', (req, res) => {
 });
 
 app.post('/add', async (req, res) => {
+
+
   const newUser = {
     firstName: req.body.first_name,
     lastName: req.body.last_name,
@@ -282,6 +339,7 @@ app.post('/add', async (req, res) => {
     zipCode: req.body.zip_code,
     city: req.body.city,
     country: req.body.country,
+    member_date: new Date(),
   
   };
 
@@ -299,8 +357,8 @@ app.post('/add', async (req, res) => {
 
   const sql = `
     INSERT INTO user 
-    (first_name, last_name, email_address, password, telephone_number, role_id, street, house_number, zip_code, city, country)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    (first_name, last_name, email_address, password, telephone_number, role_id, street, house_number, zip_code, city, country, member_date)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `;
 
   const values = [
@@ -315,6 +373,7 @@ app.post('/add', async (req, res) => {
     newUser.zipCode,
     newUser.city,
     newUser.country,
+    newUser.member_date,
     
   ];
 
@@ -347,7 +406,12 @@ app.get('/edit/:user_id', async (req, res) => {
 app.post('/edit/:user_id', async (req, res) => {
   const userId = req.params.user_id;
 
- 
+  // Check if the checkbox is checked to set the blocked date
+  let blockedDate = null;
+  if (req.body.is_blocked === 'on') {
+    blockedDate = new Date().toISOString().split('T')[0]; // Get only the date portion in YYYY-MM-DD
+  }
+
   const updatedUser = {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
@@ -359,7 +423,7 @@ app.post('/edit/:user_id', async (req, res) => {
     zip_code: req.body.zip_code,
     city: req.body.city,
     country: req.body.country,
-    
+    blocked_date: blockedDate, // Store the correct date
   };
 
   const sql = `
@@ -374,10 +438,11 @@ app.post('/edit/:user_id', async (req, res) => {
       house_number = ?,
       zip_code = ?,
       city = ?,
-      country = ?
+      country = ?,
+      blocked_date = ?
     WHERE user_id = ?
   `;
- 
+
   const values = [
     updatedUser.first_name,
     updatedUser.last_name,
@@ -389,14 +454,16 @@ app.post('/edit/:user_id', async (req, res) => {
     updatedUser.zip_code,
     updatedUser.city,
     updatedUser.country,
-    userId
+    updatedUser.blocked_date,
+    userId,
   ];
 
   try {
     await db.pool.query(sql, values);
-    res.redirect('pages/06 AdminHauptseite/edit.ejs');
+    res.redirect('/adminpage'); // Redirect back to the user list
   } catch (error) {
     console.error(error);
+    res.status(500).send("An error occurred while updating the user.");
   }
 });
 
@@ -479,27 +546,33 @@ app.post('/eventAdmin', async (req, res) => {
 //                             B E N U T Z E R H A U P T S E I T E 
 ////////////////////////////////////////////////////////////////////////////
 
-app.get('/usermain', async function (req, res) {
+app.get('/user/:userId/main', async function (req, res) {
+  
+  if (!req.session.logged_in || req.session.role_id !== 3) {
+    return res.status(403).send('Zugriff verweigert');
+  }
+
   try {
-    
+    const userId = req.session.user_id;
+
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user');
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
 
-    // Render the 'userhauptseite' view and pass the data
-    res.render('pages/3.5 UserHauptseite/userhauptseite.ejs', { 
+    res.render('pages/3.5 UserHauptseite/userhauptseite.ejs', {
       account,
       club,
-      errorMessage: '', 
-      additionalError: '', 
+      errorMessage: '',
+      additionalError: '',
     });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
 });
+
 
 ////////////////////////////////////////////////////////////////////////////
 //                             B E N U T Z E R ACCOUNTDETAILS 
@@ -508,10 +581,13 @@ app.get('/usermain', async function (req, res) {
 
   app.get('/accountdetails', async (req, res) => {
   try {
-    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
+    const userId = req.session.user_id;
 
-    //Change hardcoded user_id to session_id, hardcoded for testing  //[req.session.user_id]);
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = 1'); 
+    const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
+    const club = clubSettingsResult;
+
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
+    const account = accountSettingsResult;
     
     
     
@@ -652,10 +728,12 @@ app.get('/forgetPW', function (req, res) {
 app.get('/clubcontact', async function (req, res) {
   try {
     //Fetch club settings data from the database 
+    const userId = req.session.user_id;
+
     const clubSettingsResult = await db.pool.query('SELECT * FROM club_data');
     const club = clubSettingsResult;
 
-    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE role_id = 3');
+    const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
 
     // Render the 'clubsettings' view and pass the data
@@ -693,142 +771,146 @@ app.get('/register', function (req, res) {
 });
 
 
-// Gehört getestet
 app.post('/register', bodyParser.urlencoded({ extended: false }), async (req, res, next) => {
-  const email_address = req.body.email_address;
-  const first_name = req.body.first_name;
-  const last_name = req.body.last_name;
-  const password = req.body.password;
-  // const password1 = req.body.password1;
-  const telephone_number = req.body.telephone_number;
-  const street = req.body.street;
-  const house_number = req.body.house_number;
-  const zip_code = req.body.zip_code;
-  const city = req.body.city;
-  const country = req.body.country;
 
   // Datenbankverbindung
   try {
-    conn = await db.pool.getConnection();
-    let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
-    //const first_name_exists = await db.query('SELECT * FROM user WHERE first_name = $1', [first_name]);
-    //const last_name_exists = await db.query('SELECT * FROM user WHERE last_name = $1', [last_name]);
-    //const telephone_number_exists = await db.query('SELECT * FROM user WHERE telephone_number = $1', [telephone_number]);
+  conn = await db.pool.getConnection();
 
-    //console.log(userdata[0].email_address);
+  let email_address = req.body.email_address.trim();
+  let first_name = req.body.first_name.trim();
+  let last_name = req.body.last_name.trim();
+  let password = req.body.password.trim();
+  let password2 = req.body.password1.trim();
+  let telephone_number = req.body.telephone_number.trim();
+  let street = req.body.street.trim();
+  let house_number = req.body.house_number.trim();
+  let zip_code = req.body.zip_code.trim();
+  let city = req.body.city.trim();
+  let country = req.body.country.trim();
 
-    //errorMessage = '';
+  console.log(first_name);
 
-    // Validierungen Aller Felder.
-    if (email_address == userdata[0].email_address) {
-      if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))) {
-        // validator.isEmail(email_address)
-        return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler' });
-        userdata = undefined;
-        //return;
-      } else {
-        return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits' });
-        userdata = undefined;
-        //return;
-      }
-    }
-
-    console.log(1);
-    if (first_name.length > 0 && /^[a-zA-Z0-9_]{6, 16}$/.test(first_name)) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Namen eingeben' });
-      return;
-    }
-    console.log(2);
-    if (last_name.length > 0 && /^[a-fA-F0-]+$/.test(last_name)) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Namen eingeben' });
-      return;
-    }
-    console.log(3);
-    if (password.length > 0 && /^[a-zA-Z0-9]$/.test(password)) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Passwort eingeben' });
-      return;
-    }
-    console.log(4);
-    if (/^[0-9]{6, 10}$/.test(telephone_number) && telephone_number !== telephone_number_exists && telephone_number.length > 0) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Telefonnummer eingeben' });
-      return;
-    }
-    console.log(5);
-    if (/^[a-zA-Z]$/.test(street) && street.length > 0) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Straße eingeben' });
-      return;
-    }
-    console.log(6);
-    if (/^[0-9]{1, 6}$/.test(house_number) && house_number.length > 0) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Hausnummer eingeben' });
-      return;
-    }
-    console.log(7);
-    //console.log(userdata[0].zip_code);
-    if (/^[0-9]{1, 6}$/.test(zip_code) && zip_code.length > 0) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Postleitzahl eingeben' });
-      return;
-    }
-    console.log(8);
-    if (/^[a-zA-Z]{6, 16}$/.test(city) && city.length > 0) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Stadt eingeben' });
-      return;
-    }
-    console.log(9);
-    if (/^[a-zA-Z]{2, 16}$/.test(country) && country.length > 0) {
-      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Land eingeben' });
-      return;
-    }
-    console.log(10);
-    // Validierungen
-    if (email_address === "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" || first_name === '^[a-zA-Z0-9_]{6,16}$' || last_name === '^[a-zA-Z0-9_]{6,16}$' || password === '' || telephone_number === '^[0-9]{6, 10}' || street === '' || house_number === '^[0-9]{1, 6}' || zip_code === '^[0-9]{4,5}' || city === '^[a-zA-Z]{6,16}$' || country === '') {
-      res.render('pages/register.ejs', { errorMessage: 'Achtung ich bitte Sie die Daten richtig einzugeben' });
-      return; // Return early if validation fails.
-    }
-    console.log(11);
-
-    // insert data hier hinein
-    let lastID;
-    try {
-      const lastIDResult = await db.pool.query("SELECT IFNULL(MAX(user_id), 0) AS lastuserid FROM user");
-      lastID = lastIDResult[0].lastuserid;
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'An error occurred while inserting data.' });
-      return; // Return early in case of an error.
-    }
-
-    // Increment the lastID to get the new BenutzerID
-    const new_user_id = lastID + 1;
-
-    const values = [new_user_id, email_address, first_name, last_name, password, 0, null, null, telephone_number, 3, street, house_number, zip_code, city, country];
-    console.log(values.toString())
-    try {
-      const result = await db.pool.query(
-        `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
-                                 \`telephone_number\`, \`role_id\`, \`street\`,
-                                 \`house_number\`, \`zip_code\`, \`city\`, \`country\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        values
-      );
-
-      res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.' });
-      return;
-
-    } catch (error) {
-      console.error('Error:', error);
-      res.status(500).json({ error: 'DAta not inbsertet erroro.' });
-    }
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
-  } finally {
-    if (conn) conn.end();
+  if(password != password2) {
+    return res.render('pages/register.ejs', { errorMessage: 'Achtung bitte das Password richtig bestätigen'});
   }
 
+  let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
 
+  if(userdata.length != 0) {
+    if (email_address.length > 0) {
+      if (userdata[0].email_address == email_address)  {
+        return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits'});
+      }
+      else if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))){
+        return res.render('pages/register.ejs', { errorMessage: 'Ihre Validierung passt nicht'});
+      }
+      else {
+        return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler'});
+      }
+    }
+  }
+   
+   console.log(1);
+   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(first_name)) && first_name.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Vornamen eingeben'});
+     return;
+   }
+   console.log(2);
+   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(last_name)) && last_name.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Nachnamen eingeben'});
+     return;
+   }
+   console.log(3);
+   if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) && password.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Passwort eingeben'});
+     return;
+   }
+   console.log(4);
+   if (!(/^[0-9]{2,30}$/.test(telephone_number)) && telephone_number.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Telefonnummer eingeben'});
+     return;
+   }
+   console.log(5);
+   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(street)) && street.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Straße eingeben'});
+     return;
+   }
+   console.log(6);
+   if (!(/^[0-9]{1,6}$/.test(house_number)) && house_number.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Hausnummer eingeben'});
+     return;
+   }
+   console.log(7);
+   if (!(/^[0-9]{2,30}$/.test(zip_code)) && zip_code.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Postleitzahl eingeben'});
+     return;
+   }
+   console.log(8);
+   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(city)) && city.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Stadt eingeben'});
+     return;
+   }
+   console.log(9);
+   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(country)) && country.length > 0) {
+     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Land eingeben'});
 
+     return;
+   }
 
+   // insert data in die Datenbank
+  let lastID;
+  try {
+      const lastIDResult = await db.pool.query("SELECT IFNULL(MAX(user_id), 0) AS lastuserid FROM user");
+      lastID = lastIDResult[0].lastuserid;
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Problem mit den Einfügen der Daten ist Aufgetreten.' });
+      return; // Return early in case of an error.
+  }
+
+  function getFormattedDate() {
+    var jetzt = new Date();
+  
+    var jahr = jetzt.getFullYear(); // Jahr als vierstellige Zahl
+    var monat = jetzt.getMonth() + 1; // Monat als Zahl (0 = Januar, 11 = Dezember)
+    var tag = jetzt.getDate(); // Tag des Monats
+  
+    // Füge eine führende Null hinzu, wenn Monat oder Tag kleiner als 10 sind
+    monat = monat < 10 ? '0' + monat : monat;
+    tag = tag < 10 ? '0' + tag : tag;
+  
+    return `${jahr}-${monat}-${tag}`;
+  }
+  
+  console.log(getFormattedDate()); // Gibt das Datum im Format "YYYY-MM-DD" aus
+  
+
+ let currentDate = getFormattedDate();
+
+  // Increment the lastID to get the new BenutzerID
+  const new_user_id = lastID + 1;
+  const values = [new_user_id, email_address, first_name, last_name, password, 0, null, currentDate, telephone_number, 3, street, house_number, zip_code, city, country];
+  try {
+      const result = await db.pool.query(
+          `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
+                                 \`telephone_number\`, \`role_id\`, \`street\`,
+                                 \`house_number\`, \`zip_code\`, \`city\`, \`country\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+          values
+      );
+      res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.'});
+      return; 
+  } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'Daten sind nicht hinzugefügt worden.' });
+  } 
+
+} catch (error) {
+  console.error(error);
+  res.status(500).send('Server Error');
+} finally {
+  if (conn) conn.end();
+}
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -839,76 +921,62 @@ app.get('/login', function (req, res) {
   res.render('pages/login');
 });
 
+app.post('/login', async function (req, res) {
+  const user_email_address = req.body.email_address;
+  const user_password = req.body.password;
+  
 
-app.post('/login', async function (req, res, next) {
-  // werte von der Webseite bekommen
-  let user_email_address = req.body.email_address;
-  let user_password = req.body.password;
+  if (!user_email_address || !user_password) {
+    return res.render('pages/login', { errorMessage: 'Please fill in all fields!' });
+  }
 
-  let conn;
-  if (user_email_address && user_password) {
-    try {
-      conn = await db.pool.getConnection();
-
-      /// Fetch club settings data from the database using the appropriate column for filtering
-      const userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${user_email_address}'`);
-      const userIdendifier = await conn.query(`SELECT user_id FROM user WHERE email_address = '${user_email_address}'`);
-
-
-      if (userdata.length === 1) {
-
-        if (user_email_address === userdata[0].email_address && user_password === userdata[0].password) {
-          req.session.user_id = userdata[0].user_id;
-          req.session.role_id = userdata[0].role_id;
-          req.session.logged_in = true;
-
-          if (userdata[0].role_id === 3) {
-
-            res.redirect('/user/' + req.session.user_id);
-
-            // Validate user credentials
-            // if () {
-            //   req.session.userId = userId; // Set session identifier
-
-            // }
-            //return res.render('register', {userdata, errorMessage: 'Yes, you are'});
-          } else if (userdata[0].role_id === 1) {
-            console.log('admin noch nicht verfügbar');
-          } else {
-            console.log('User noch nicht verfügbar');
-          }
-
-        } else {
-          res.render('login', { userdata, errorMessage: 'Sie haben eine Falsche Email oder Password' });
-        }
-      }
-
-      //console.log(userdata);
-      //res.render('login', {userdata, errorMessage: 'Willkomen'});
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
-    } finally {
-      if (conn) conn.end();
-    }
-
-
+  try {
+    // Fetch user data based on the email address
+    const user = await db.pool.query('SELECT * FROM user WHERE email_address = ?', [user_email_address]);
 
     
-  } else {
-    const error = 'Bitte füllen Sie alle Felder aus!';
-    return res.render('login', { errorMessage: error });
-    //res.send('Bitte füllen Sie alle Felder aus!');
-    res.end();
+    console.log(user);
+    console.log(user[0].blocked_date);
+
+    if (user[0].blocked_date !== null) {
+      console.log(`User ${user_email_address} is blocked. Blocked date: ${user.blocked_date}`);
+      return res.render('pages/login', { errorMessage: 'Your account is blocked. Please contact support.' });
+    }
+
+    if (user.length === 1 && user[0].password === user_password) {
+      // Set session variables
+      req.session.user_id = user[0].user_id;
+      req.session.role_id = user[0].role_id;
+      req.session.logged_in = true;
+
+      // Redirect based on role
+      if (user[0].role_id === 1) {
+        return res.redirect('/adminpage'); // Redirect to admin page
+      } else if (user[0].role_id === 3) {
+        return res.redirect(`/user/${user[0].user_id}/main`); // Redirect to user-specific page
+      } else {
+        return res.status(403).send('Access denied: Invalid role');
+      }
+    } else {
+      return res.render('pages/login', { errorMessage: 'Incorrect email address or password' });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send('Internal Server Error');
   }
 });
 
-app.get('/logout', function (req, res,) {
-  req.session.destroy();
-  // wenn er die Applikation schließt muss die session auch bendet werden.
-  res.redirect('/');
-});
 
+app.get('/logout', function (req, res) {
+  
+  req.session.destroy(function (err) {
+    if (err) {
+      console.error('Error during session destruction:', err);
+      return res.status(500).send('An error occurred during logout');
+    }
+    res.redirect('/login'); // Redirect to home page after logout
+  });
+});
 ////////////////////////////////////////////////////////////////////////////
 //                             U S E R 
 ////////////////////////////////////////////////////////////////////////////
