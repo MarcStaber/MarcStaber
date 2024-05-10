@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Edit User</title>
-  <link rel="stylesheet" type="text/css" href="/css/pages/06 AdminHauptseite/edit.css"> />
+  <link rel="stylesheet" type="text/css" href="/css/pages/06 AdminHauptseite/edit.css"> 
 </head>
 <body>
   <h1>Benutzer bearbeiten</h1>
@@ -38,6 +38,12 @@
     <br>
     <label for="country">Land</label>
     <input type="text" name="country" value="<%= user.country %>" required>
+
+    <label for="is_blocked">Blockieren:</label>
+    <input type="checkbox" name="is_blocked" id="is_blocked" <%= user.blocked_date ? 'checked' : '' %> >
+    <br>
+
+
     <br>
     <button type="submit">Update</button>
   </form>

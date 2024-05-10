@@ -21,7 +21,7 @@
       <h1>   <%= club[0].characteristic %></h1>
     </div>
     <flexitem>
-        <a href="login"><button>Logout</button></a>
+      <a href="/logout"><button>Logout</button></a>
     </flexitem>
     <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
   </header>
@@ -47,7 +47,7 @@
           <th>Gesperrtdatum</th>
           <th>Mitgliedsdatum</th>
           <th>Telefonnummer</th>
-          <th>RollenID</th>
+          <th>Rolle</th>
           <th>Adresse</th>
           <th>Hausnummer</th>
           <th>Postleitzahl</th>
@@ -69,16 +69,25 @@
               <%= user.email_address %>
             </td>
             <td>
-              <%= user.blocked_date %>
+              <% if (user.blocked_date) { %>
+                <%= new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(user.blocked_date)) %>
+              <% } else { %>
+                
+              <% } %>
+            </td>
             </td>
             <td>
-              <%= user.member_date %>
+              <% if (user.member_date) { %>
+                <%= new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(user.member_date)) %>
+              <% } else { %>
+                
+              <% } %>
             </td>
             <td>
               <%= user.telephone_number %>
             </td>
             <td>
-              <%= user.role_id %>
+              <%= roleNames[user.role_id] %>
             </td>
             <td>
               <%= user.street %>

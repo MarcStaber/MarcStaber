@@ -21,7 +21,7 @@
       <h1>   <%= club[0].characteristic %></h1>
     </div>
     <flexitem>
-        <a href="login"><button>Logout</button></a>
+      <a href="/logout"><button>Logout</button></a>
     </flexitem>
     <img class= "logo"src="http://localhost:3000/static/logo.png" alt="Hier sollte ein Logo Stehen">
   </header>
@@ -42,8 +42,22 @@
       </div>
 
       <div class="form-group">
-        <label for="clubAddress">Adresse des Vereins</label>
-        <input type="text" id="clubAddress" name="clubAddress" value="<%= club[2].characteristic %>">
+        <label for="clubAddress">Ort des Vereins</label>
+        <input type="text" id="clubStreet" name="clubStreet" value="<%= club[2].characteristic %>">
+      </div>
+
+      <div class="form-group">
+        <label for="clubAddress">Straße</label>
+        <input type="text" id="clubAddress" name="clubAddress" value="<%= club[4].characteristic %>">
+      </div> 
+      <div class="form-group">
+        <label for="clubAddress">Hausnummer</label>
+        <input type="text" id="clubHousenumber" name="clubHousenumber" value="<%= club[5].characteristic %>">
+      </div>
+
+      <div class="form-group">
+        <label for="clubAddress">Postleitzahl</label>
+        <input type="text" id="clubZip" name="clubZip" value="<%= club[1].characteristic %>">
       </div>
 
       <div class="form-group">
