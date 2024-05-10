@@ -695,144 +695,140 @@ app.get('/register', function (req, res) {
 
 // Gehört getestet
 app.post('/register', bodyParser.urlencoded({ extended: false }), async (req, res, next) => {
+  const email_address = req.body.email_address;
+  const first_name = req.body.first_name;
+  const last_name = req.body.last_name;
+  const password = req.body.password;
+  // const password1 = req.body.password1;
+  const telephone_number = req.body.telephone_number;
+  const street = req.body.street;
+  const house_number = req.body.house_number;
+  const zip_code = req.body.zip_code;
+  const city = req.body.city;
+  const country = req.body.country;
 
   // Datenbankverbindung
   try {
-  conn = await db.pool.getConnection();
+    conn = await db.pool.getConnection();
+    let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
+    //const first_name_exists = await db.query('SELECT * FROM user WHERE first_name = $1', [first_name]);
+    //const last_name_exists = await db.query('SELECT * FROM user WHERE last_name = $1', [last_name]);
+    //const telephone_number_exists = await db.query('SELECT * FROM user WHERE telephone_number = $1', [telephone_number]);
 
-  let email_address = req.body.email_address;
-  let first_name = req.body.first_name;
-  let last_name = req.body.last_name;
-  let password = req.body.password;
-  let password2 = req.body.password1;
-  let telephone_number = req.body.telephone_number;
-  let street = req.body.street;
-  let house_number = req.body.house_number;
-  let zip_code = req.body.zip_code;
-  let city = req.body.city;
-  let country = req.body.country;
+    //console.log(userdata[0].email_address);
 
-  console.log(first_name);
+    //errorMessage = '';
 
-  if(password != password2) {
-    return res.render('pages/register.ejs', { errorMessage: 'Achtung bitte das Password richtig bestätigen'});
-  }
-
-  let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
-
-  if(userdata.length != 0) {
-    if (email_address.length > 0) {
-      if (userdata[0].email_address == email_address)  {
-        return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits'});
-      }
-      else if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))){
-        return res.render('pages/register.ejs', { errorMessage: 'Ihre Validierung passt nicht'});
-      }
-      else {
-        return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler'});
+    // Validierungen Aller Felder.
+    if (email_address == userdata[0].email_address) {
+      if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))) {
+        // validator.isEmail(email_address)
+        return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler' });
+        userdata = undefined;
+        //return;
+      } else {
+        return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits' });
+        userdata = undefined;
+        //return;
       }
     }
-  }
-   
-   console.log(1);
-   if (!(/^[a-zA-Z]{2,30}$/.test(first_name)) && first_name.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Vornamen eingeben'});
-     return;
-   }
-   console.log(2);
-   if (!(/^[a-zA-Z]{2,30}$/.test(last_name)) && last_name.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Nachnamen eingeben'});
-     return;
-   }
-   console.log(3);
-   if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) && password.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen ein gültiges Passwort eingeben'});
-     return;
-   }
-   console.log(4);
-   if (!(/^[0-9]{2,30}$/.test(telephone_number)) && telephone_number.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen eine gültige Telefonnummer eingeben'});
-     return;
-   }
-   console.log(5);
-   if (!(/^[a-zA-Z]{2,30}$/.test(street)) && street.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen eine gültige Straße eingeben'});
-     return;
-   }
-   console.log(6);
-   if (!(/^[0-9]{1,6}$/.test(house_number)) && house_number.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen eine gültige Hausnummer eingeben'});
-     return;
-   }
-   console.log(7);
-   if (!(/^[0-9]{2,30}$/.test(zip_code)) && zip_code.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen eine gültige Postleitzahl eingeben'});
-     return;
-   }
-   console.log(8);
-   if (!(/^[a-zA-Z]{2,30}$/.test(city)) && city.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen eine gültige Stadt eingeben'});
-     return;
-   }
-   console.log(9);
-   if (!(/^[a-zA-Z]{2,30}$/.test(country)) && country.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen ein gültiges Land eingeben'});
-     return;
-   }
 
-   // insert data in die Datenbank
-  let lastID;
-  try {
+    console.log(1);
+    if (first_name.length > 0 && /^[a-zA-Z0-9_]{6, 16}$/.test(first_name)) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Namen eingeben' });
+      return;
+    }
+    console.log(2);
+    if (last_name.length > 0 && /^[a-fA-F0-]+$/.test(last_name)) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Namen eingeben' });
+      return;
+    }
+    console.log(3);
+    if (password.length > 0 && /^[a-zA-Z0-9]$/.test(password)) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Passwort eingeben' });
+      return;
+    }
+    console.log(4);
+    if (/^[0-9]{6, 10}$/.test(telephone_number) && telephone_number !== telephone_number_exists && telephone_number.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Telefonnummer eingeben' });
+      return;
+    }
+    console.log(5);
+    if (/^[a-zA-Z]$/.test(street) && street.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Straße eingeben' });
+      return;
+    }
+    console.log(6);
+    if (/^[0-9]{1, 6}$/.test(house_number) && house_number.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Hausnummer eingeben' });
+      return;
+    }
+    console.log(7);
+    //console.log(userdata[0].zip_code);
+    if (/^[0-9]{1, 6}$/.test(zip_code) && zip_code.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Postleitzahl eingeben' });
+      return;
+    }
+    console.log(8);
+    if (/^[a-zA-Z]{6, 16}$/.test(city) && city.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Stadt eingeben' });
+      return;
+    }
+    console.log(9);
+    if (/^[a-zA-Z]{2, 16}$/.test(country) && country.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Land eingeben' });
+      return;
+    }
+    console.log(10);
+    // Validierungen
+    if (email_address === "^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$" || first_name === '^[a-zA-Z0-9_]{6,16}$' || last_name === '^[a-zA-Z0-9_]{6,16}$' || password === '' || telephone_number === '^[0-9]{6, 10}' || street === '' || house_number === '^[0-9]{1, 6}' || zip_code === '^[0-9]{4,5}' || city === '^[a-zA-Z]{6,16}$' || country === '') {
+      res.render('pages/register.ejs', { errorMessage: 'Achtung ich bitte Sie die Daten richtig einzugeben' });
+      return; // Return early if validation fails.
+    }
+    console.log(11);
+
+    // insert data hier hinein
+    let lastID;
+    try {
       const lastIDResult = await db.pool.query("SELECT IFNULL(MAX(user_id), 0) AS lastuserid FROM user");
       lastID = lastIDResult[0].lastuserid;
-  } catch (error) {
+    } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ error: 'Problem mit den Einfügen der Daten ist Aufgetreten.' });
+      res.status(500).json({ error: 'An error occurred while inserting data.' });
       return; // Return early in case of an error.
-  }
+    }
 
-  function getFormattedDate() {
-    var jetzt = new Date();
-  
-    var jahr = jetzt.getFullYear(); // Jahr als vierstellige Zahl
-    var monat = jetzt.getMonth() + 1; // Monat als Zahl (0 = Januar, 11 = Dezember)
-    var tag = jetzt.getDate(); // Tag des Monats
-  
-    // Füge eine führende Null hinzu, wenn Monat oder Tag kleiner als 10 sind
-    monat = monat < 10 ? '0' + monat : monat;
-    tag = tag < 10 ? '0' + tag : tag;
-  
-    return `${jahr}-${monat}-${tag}`;
-  }
-  
-  console.log(getFormattedDate()); // Gibt das Datum im Format "YYYY-MM-DD" aus
-  
+    // Increment the lastID to get the new BenutzerID
+    const new_user_id = lastID + 1;
 
- let currentDate = getFormattedDate();
-  console.log("Before Insert");
-  // Increment the lastID to get the new BenutzerID
-  const new_user_id = lastID + 1;
-  const values = [new_user_id, email_address, first_name, last_name, password, 0, null, currentDate, telephone_number, 3, street, house_number, zip_code, city, country];
-  try {
+    const values = [new_user_id, email_address, first_name, last_name, password, 0, null, null, telephone_number, 3, street, house_number, zip_code, city, country];
+    console.log(values.toString())
+    try {
       const result = await db.pool.query(
-          `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
+        `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
                                  \`telephone_number\`, \`role_id\`, \`street\`,
                                  \`house_number\`, \`zip_code\`, \`city\`, \`country\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          values
+        values
       );
-      res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.'});
-      return; 
-  } catch (error) {
+
+      res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.' });
+      return;
+
+    } catch (error) {
       console.error('Error:', error);
-      res.status(500).json({ error: 'Daten sind nicht hinzugefügt worden.' });
-  } 
-  console.log("After Insert");
-} catch (error) {
-  console.error(error);
-  res.status(500).send('Server Error');
-} finally {
-  if (conn) conn.end();
-}
+      res.status(500).json({ error: 'DAta not inbsertet erroro.' });
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  } finally {
+    if (conn) conn.end();
+  }
+
+
+
+
 });
 
 ////////////////////////////////////////////////////////////////////////////
