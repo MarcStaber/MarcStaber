@@ -96,23 +96,7 @@ class Court {
             console.log(error);
         }
     }
-/*
-    static async findAll() {
-        let array = [];
-        try {
-            let query = `SELECT * FROM court;`;
-            const result = await db.pool.query(query);
-            // result is a list with only one element
-            result.forEach(element => {
-                console.log(element.court);
-                array.push(new Court(element.court_id, element.court));
-            });
-        } catch (error) {
-            console.log(error);
-        }    
-        return array;
-    }
-*/
+
     static async findAll() {
         let array = [];
         try {

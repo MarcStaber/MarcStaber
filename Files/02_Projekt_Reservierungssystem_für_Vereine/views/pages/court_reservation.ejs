@@ -11,8 +11,7 @@
       $(document).ready(function () {
 
         load_data();
-        //load_user_roles();
-
+        
 
         // *******************************************************************************************
         // LOAD TABLE DATA
@@ -105,8 +104,7 @@
           console.log("url = " + req_url);
 
           console.log("data = " + $('#modal_form').serialize());
-          //console.log("role_id = " + $('#role_id').val());
-
+        
           $.ajax({
             url: req_url,
             method: "POST",
@@ -178,7 +176,6 @@
             method: "GET",
             dataType: "JSON",
             success: function (json) {
-              //console.log(json);
               $('#reservation_number').val(json.data.reservation_number);
               $('#user_id').val(json.data.user_id);
               $('#court_id').val(json.data.court_id);
@@ -348,13 +345,7 @@
             <input type="text" name="cancele_datetime" id="cancele_datetime" class="form-control" />
           </div>
 
-          <!-- <div class="mb-3">
-            <label class="form-label">User Role</label>
-            <select name="role_id" id="role_id" class="form-control">
-              <option value="1">One</option>
-              <option value="2" selected>Two</option>
-            </select>
-          </div> -->
+
           <!--
 ******************************************************************
 N O T E

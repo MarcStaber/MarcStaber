@@ -70,25 +70,4 @@ class Role {
         const obj = JSON.parse(json);
         return new Role(obj.role_id, obj.role);
     }
-
-
-
-
-
-
-
-    // war nur zum versuch vielleicht für später
-    // static async getRolesByUserIdAndRoleId(user_id, role_id) {
-
-    //     const sql = 'SELECT * FROM role WHERE user_id =? AND role_id =?';
-    //     const values = [user_id, role_id];
-    //     try {
-    //         const result = await db.pool.query(sql, values);
-    //         return result;
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
-
-    
 }

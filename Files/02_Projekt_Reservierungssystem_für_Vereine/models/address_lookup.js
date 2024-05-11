@@ -1,8 +1,3 @@
-
-// Achtung war über die Weihnachten mit User zusammen wurde dann,
-// Jeweils eine Extra Tabelle erstellt 
-// Falls was Fehlt
-
 class address_lookup {
     constructor(street, house_number, zip_code, city, country) {
 
@@ -15,8 +10,6 @@ class address_lookup {
 
     /////////////////////////////////////////////////////////////////////////////////
     // getter und setter
-    // am 25.2.2024 geschrieben
-    // nicht geteste
     /////////////////////////////////////////////////////////////////////////////////
     getStreet() {
         return this.street;
@@ -52,8 +45,6 @@ class address_lookup {
 
     /////////////////////////////////////////////////////////////////////////////////
     // to 's
-    // am 25.2.2024 geschrieben 
-    // nicht geteste
     /////////////////////////////////////////////////////////////////////////////////
     toString() {
         return this.street + " " + this.house_number + " " + this.zip_code + " " + this.city + " " + this.country;
@@ -82,8 +73,6 @@ class address_lookup {
 
     /////////////////////////////////////////////////////////////////////////////////
     // from 's
-    // am 25.2.2024 geschrieben 
-    // nicht geteste
     /////////////////////////////////////////////////////////////////////////////////
     fromArray(array) {
         this.street = array[0];
@@ -115,28 +104,7 @@ class address_lookup {
     }
 
     /////////////////////////////////////////////////////////////////////////////////
-    // static 's
-    // am 25.2.2024 geschrieben
-    // nicht geteste
-    /////////////////////////////////////////////////////////////////////////////////
-    // static fromObject(object) {
-    //     return new address_lookup(object.street, object.house_number, object.zip_code, object.city, object.country);
-    // }
-    // static fromArray(array) {
-    //     return new address_lookup(array[0], array[1], array[2], array[3], array[4]);
-    // }
-    // static fromJSON(json) {
-    //     return new address_lookup(json.street, json.house_number, json.zip_code, json.city, json.country);
-    // }
-    // static fromObject(object) {
-    //     return new address_lookup(object.street, object.house_number, object.zip_code, object.city, object.country);
-    // }
-    
-
-    /////////////////////////////////////////////////////////////////////////////////
-    // functionen
-    // am 25.2.2024 geschrieben
-    // nicht geteste
+    // Funktionen
     ////////////////////////////////////////////////////////////////////////////////
 
     static async createAddress_lookup(req, res) {

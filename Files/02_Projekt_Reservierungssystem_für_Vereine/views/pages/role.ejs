@@ -163,24 +163,8 @@
             method: "GET",
             dataType: "JSON",
             success: function (json) {
-              //console.log(json);
-            //   $('#user_id').val(json.data.user_id);
-            //   $('#email_address').val(json.data.email_address);
-            //   $('#first_name').val(json.data.first_name);
-            //   $('#last_name').val(json.data.last_name);
-            //   $('#password').val(json.data.password);
-            //   $('#count_of_false_logins').val(json.data.count_of_false_logins);
-
-            //   $('#blocked_date').val(json.data.blocked_date);
-            //   $('#member_date').val(json.data.member_date);
-            //   $('#telephone_number').val(json.data.telephone_number);
               $('#role_id').val(json.data.role_id);
               $('#role').val(json.data.role);
-            //   $('#street').val(json.data.street);
-            //   $('#house_number').val(json.data.house_number);
-            //   $('#zip_code').val(json.data.zip_code);
-            //   $('#city').val(json.data.city);
-            //   $('#country').val(json.data.country);
             }
           });
 
@@ -300,13 +284,6 @@
             <input type="text" name="role" id="role" class="form-control" />
           </div>
 
-          <!-- <div class="mb-3">
-            <label class="form-label">User Role</label>
-            <select name="role_id" id="role_id" class="form-control">
-              <option value="1">One</option>
-              <option value="2" selected>Two</option>
-            </select>
-          </div> -->
           <!--
 ******************************************************************
 N O T E
