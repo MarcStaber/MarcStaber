@@ -42,7 +42,12 @@
       </div>
 
       <div class="form-group">
-        <label for="clubAddress">Ort des Vereins</label>
+        <label for="clubAddress">Postleitzahl</label>
+        <input type="text" id="clubZip" name="clubZip" value="<%= club[1].characteristic %>">
+      </div>
+
+      <div class="form-group">
+        <label for="clubAddress">Ort</label>
         <input type="text" id="clubStreet" name="clubStreet" value="<%= club[2].characteristic %>">
       </div>
 
@@ -55,10 +60,6 @@
         <input type="text" id="clubHousenumber" name="clubHousenumber" value="<%= club[4].characteristic %>">
       </div>
 
-      <div class="form-group">
-        <label for="clubAddress">Postleitzahl</label>
-        <input type="text" id="clubZip" name="clubZip" value="<%= club[1].characteristic %>">
-      </div>
     </article>
 
     <flexitem></flexitem>
@@ -75,7 +76,7 @@
       </div>
 
       <div class="form-group">
-        <label for="clubCourts">Tennisplätze:</label>
+        <label for="clubCourts">max. buchbare Zeit (in Minuten):</label>
         <input type="text" id="clubCourts" name="clubCourts" value="<%= club[8].characteristic %>">
       </div>
 
