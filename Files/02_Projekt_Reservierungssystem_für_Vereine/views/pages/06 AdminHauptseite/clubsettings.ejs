@@ -33,9 +33,9 @@
   </nav>
 
   <section class="mainPart" id="clubinfo">
-    <article class="clubForm">
   <% if (club) { %>
     <form action="/saveclubsettings" method="post" enctype="multipart/form-data">
+      <article class="clubForm">
       <div class="form-group">
         <label for="clubMainTitle">Vereinsname</label>
         <input type="text" id="clubMainTitle" name="clubMainTitle" value="<%= club[0].characteristic %>">
@@ -48,18 +48,22 @@
 
       <div class="form-group">
         <label for="clubAddress">Straße</label>
-        <input type="text" id="clubAddress" name="clubAddress" value="<%= club[4].characteristic %>">
+        <input type="text" id="clubAddress" name="clubAddress" value="<%= club[3].characteristic %>">
       </div> 
       <div class="form-group">
         <label for="clubAddress">Hausnummer</label>
-        <input type="text" id="clubHousenumber" name="clubHousenumber" value="<%= club[5].characteristic %>">
+        <input type="text" id="clubHousenumber" name="clubHousenumber" value="<%= club[4].characteristic %>">
       </div>
 
       <div class="form-group">
         <label for="clubAddress">Postleitzahl</label>
         <input type="text" id="clubZip" name="clubZip" value="<%= club[1].characteristic %>">
       </div>
+    </article>
 
+    <flexitem></flexitem>
+    
+    <article class="clubForm">
       <div class="form-group">
         <label for="clubEmail">Email-Adresse</label>
         <input type="text" id="clubEmail" name="clubEmail" value="<%= club[6].characteristic %>">

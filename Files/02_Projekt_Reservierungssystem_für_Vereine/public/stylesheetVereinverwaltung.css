@@ -113,7 +113,16 @@ h1+p{margin-bottom: 25px; font-weight: bold;}
     margin-bottom: 0px;
     }
 
-    .mainPart#clubinfo article{
+    .mainPart form { 
+      display: flex;
+      height: 1000px; 
+      flex-direction:row;
+      justify-content:center;
+      align-items: center;
+      margin-bottom: 0px;
+      }
+
+    .mainPart#clubinfo form article{
       display: flex;
       width:320px;
       height: 650px;
