@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `city` varchar(100) NOT NULL COMMENT 'Ort',
   `country` varchar(100) NOT NULL COMMENT 'Land',
   PRIMARY KEY (`user_id`)
+  UNIQUE KEY `email_address` (`email_address`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Benutzer';
 
 -- Daten Export vom Benutzer nicht ausgewählt
