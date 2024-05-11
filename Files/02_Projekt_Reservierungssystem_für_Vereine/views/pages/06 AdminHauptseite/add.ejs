@@ -26,7 +26,7 @@
         <label for="phone-number">Telefonnummer</label>
         <input type="tel" id="telephone_number-number" name="telephone_number" required>
 
-        <label for="role-id">RollenID</label>
+        <label for="role-id">RollenID: (1 = Admin | 2 = Platzwart | 3 = Mitglied | 4 = Gast | 6 = Neuer Benutzer)</label>
         <input type="text" id="role_id" name="role_id" required>
 
         <label for="street">Adresse</label>
@@ -44,8 +44,12 @@
         <label for="country">Land</label>
         <input type="text" id="country" name="country" required>
         <input type="submit" value="Benutzer hinzufügen">
+
+        
     </form>
 
+    <a href="/adminpage">Zurück zur Benutzerliste</a>
+    
     <% if (errorMessage) { %>
         <p style="color: red;"><%= errorMessage %></p>
     <% } %>

@@ -47,3 +47,17 @@ input[type="submit"]:hover {
         max-width: 100%;
     }
 }
+
+a {
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+    color: #4863a2;
+    text-decoration: none;
+    padding-bottom: 15px;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+

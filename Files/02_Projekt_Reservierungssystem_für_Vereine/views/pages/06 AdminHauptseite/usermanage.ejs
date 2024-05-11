@@ -109,14 +109,37 @@
                 <a href="/edit/<%= user.user_id %>">Edit</a>
               </button>
               <button>
-                <a href="/delete/<%= user.user_id %>">Delete</a>
-              </button>
+                <a href="#" onclick="confirmDelete('<%= user.user_id %>')">Delete</a>
+            </button>
+            
+              
             </td>
           </tr>
           <% }); %>
       </tbody>
     </table>
-
+    <script>
+      function confirmDelete(userId) {
+          console.log("Delete button clicked for user ID:", userId);
+          // Open the popout window for delete confirmation
+          var deleteWindow = window.open('/delete/' + userId, 'Delete Confirmation', 'width=400,height=400');
+          if (!deleteWindow) {
+              // Popup blocker prevented opening the window, so fall back to a normal link
+              window.location.href = '/delete/' + userId;
+          } else {
+              // Listen for a message from the popout window to reload the main window after deletion
+              window.addEventListener('message', function(event) {
+                  if (event.data === 'userDeleted') {
+                      // Close the popout window
+                      deleteWindow.close();
+                      // Reload the main window to reflect the changes
+                      window.location.reload();
+                  }
+              });
+          }
+      }
+  </script>
+  
     <!-- Pagination links go here -->
     <div class="pagination">
       <% for (let i=1; i <=totalPages; i++) { %>

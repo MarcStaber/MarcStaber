@@ -168,6 +168,36 @@ function checkAdminAccess(req, res, next) {
 
 
 ////////////////////////////////////////////////////////////////////////////
+//               ADMINPAGE confirmation button (delete)
+////////////////////////////////////////////////////////////////////////////
+
+app.get('/deleteconfirm/:user_id', function (req, res) {
+  const userId = req.params.user_id;
+  res.render('deleteconfirm', { userId: userId });
+});
+
+app.post('/deleteconfirm/:user_id', async function (req, res) {
+  const userId = req.params.user_id;
+  const confirmation = req.body.confirmation;
+
+  if (confirmation === 'yes') {
+      let conn;
+      try {
+          conn = await db.pool.getConnection();
+          await conn.query('DELETE FROM user WHERE user_id = ?', [userId]);
+          res.send('User deleted successfully');
+      } catch (error) {
+          console.error(error);
+          res.status(500).send('An error occurred while deleting the user');
+      } finally {
+          if (conn) conn.end();
+      }
+  } else {
+      res.redirect('/adminpage');
+  }
+});
+
+////////////////////////////////////////////////////////////////////////////
 //                             A D M I N P A G E 
 ////////////////////////////////////////////////////////////////////////////
 app.get('/adminpage', checkAdminAccess, async function (req, res) {
@@ -473,15 +503,19 @@ app.post('/edit/:user_id', async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 app.get('/delete/:user_id', async (req, res) => {
   const userId = req.params.user_id;
-  let conn;
+  res.render('pages/06 AdminHauptseite/deleteConfirm.ejs', { userId: userId });
+});
+
+
+app.post('/delete/:user_id', async (req, res) => {
+  const userId = req.params.user_id;
   try {
-    conn = await db.pool.getConnection();
-    await conn.query('DELETE FROM user WHERE user_id = ?', [userId]);
-    res.redirect('/adminpage');
+    await db.pool.query('DELETE FROM user WHERE user_id = ?', [userId]);
+    // Send a message back to the popout window to indicate successful deletion
+    res.send('<script>window.opener.postMessage("userDeleted", "*"); window.close();</script>');
   } catch (error) {
-    throw error;
-  } finally {
-    if (conn) conn.end();
+    console.error("Error deleting user:", error);
+    res.status(500).send("Error deleting user");
   }
 });
 ////////////////////////////////////////////////////////////////////////////
@@ -498,6 +532,9 @@ app.get('/event', async function (req, res) {
     res.status(500).send('Internal Server Error');
   }
 });
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////
 //                             ADD EVENT Admin

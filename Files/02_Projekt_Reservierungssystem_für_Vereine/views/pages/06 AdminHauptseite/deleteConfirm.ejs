@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delete Confirmation</title>
+    <style>
+        /* Add your CSS styles for the popout window here */
+        .popout-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            margin: 0 10px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="popout-container">
+        <p>Wollen Sie diesen Benutzer wirklich löschen?</p>
+        <div class="button-container">
+            
+            <form id="deleteForm" method="post" action="/delete/<%= userId %>">
+                <button type="button" id="deleteYes">Ja</button>
+                <button type="button" id="deleteNo">Nein</button>
+            </form>
+        </div>
+    </div>
+    
+
+    <script>
+        // JavaScript to handle form submission for deletion
+        document.getElementById('deleteYes').addEventListener('click', function() {
+            // Submit the form for deletion
+            document.getElementById('deleteForm').submit();
+        });
+    
+        document.getElementById('deleteNo').addEventListener('click', function() {
+            // Close the popout window if 'NO' is clicked
+            window.close();
+        });
+    
+        // Listen for a message from the server indicating successful deletion
+        window.addEventListener('message', function(event) {
+            if (event.data === 'userDeleted') {
+                // Close the popout window
+                window.close();
+                // Send a message to the main window to reload the admin page
+                window.opener.postMessage("reloadAdminPage", "*");
+            }
+        });
+    </script>
+    
+    
+    
+</body>
+</html>
