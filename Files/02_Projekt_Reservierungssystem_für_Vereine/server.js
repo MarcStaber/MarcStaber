@@ -147,7 +147,7 @@ app.get('/about', function (req, res) {
 function checkAdminAccess(req, res, next) {
   const roleId = req.session.role_id;
   const isLoggedIn = req.session.logged_in;
-  
+
   // Check if user is logged in
   if (!isLoggedIn) {
     return res.redirect('/login'); // Redirect to login if not logged in
@@ -181,19 +181,19 @@ app.post('/deleteconfirm/:user_id', async function (req, res) {
   const confirmation = req.body.confirmation;
 
   if (confirmation === 'yes') {
-      let conn;
-      try {
-          conn = await db.pool.getConnection();
-          await conn.query('DELETE FROM user WHERE user_id = ?', [userId]);
-          res.send('User deleted successfully');
-      } catch (error) {
-          console.error(error);
-          res.status(500).send('An error occurred while deleting the user');
-      } finally {
-          if (conn) conn.end();
-      }
+    let conn;
+    try {
+      conn = await db.pool.getConnection();
+      await conn.query('DELETE FROM user WHERE user_id = ?', [userId]);
+      res.send('User deleted successfully');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('An error occurred while deleting the user');
+    } finally {
+      if (conn) conn.end();
+    }
   } else {
-      res.redirect('/adminpage');
+    res.redirect('/adminpage');
   }
 });
 
@@ -201,7 +201,7 @@ app.post('/deleteconfirm/:user_id', async function (req, res) {
 //                             A D M I N P A G E 
 ////////////////////////////////////////////////////////////////////////////
 app.get('/adminpage', checkAdminAccess, async function (req, res) {
-  
+
   const roleNames = {
     1: 'Admin',
     2: 'Platzwart',
@@ -209,7 +209,7 @@ app.get('/adminpage', checkAdminAccess, async function (req, res) {
     4: 'Gast',
     5: 'Neuer Benutzer'
   };
-  
+
 
 
   const ITEMS_PER_PAGE = 15;
@@ -233,13 +233,13 @@ app.get('/adminpage', checkAdminAccess, async function (req, res) {
     const totalUsers = Number(countResult[0].count);
     const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
 
-    res.render('pages/06 AdminHauptseite/usermanage.ejs', { 
-      users: results, 
-      club, 
-      totalPages, 
+    res.render('pages/06 AdminHauptseite/usermanage.ejs', {
+      users: results,
+      club,
+      totalPages,
       currentPage,
       account,
-      roleNames 
+      roleNames
     });
   } catch (error) {
     console.error(error);
@@ -253,22 +253,22 @@ app.get('/adminpage', checkAdminAccess, async function (req, res) {
 
 //uploaded picture replaces "Logo.png" in the public folder
 app.post('/saveclubsettings', checkAdminAccess, upload.single('clubImage'), async (req, res) => {
-  const 
-  { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts, clubStreet, clubHousenumber, clubZip } = req.body;
-  
+  const
+    { clubMainTitle, clubAddress, clubEmail, clubPhoneNumber, clubCourts, clubStreet, clubHousenumber, clubZip } = req.body;
+
   const clubData = [
     { id: 1, significance: 'Vereinsname', characteristic: clubMainTitle },
     { id: 2, significance: 'Postleitzahl', characteristic: clubZip },
     { id: 3, significance: 'Ort', characteristic: clubAddress },
-    { id: 4, significance: 'Straße', characteristic: clubStreet},
-    { id: 5, significance: 'Hausnummer', characteristic: clubHousenumber},
+    { id: 4, significance: 'Straße', characteristic: clubStreet },
+    { id: 5, significance: 'Hausnummer', characteristic: clubHousenumber },
     { id: 6, significance: 'Telefonnummer', characteristic: clubPhoneNumber },
     { id: 7, significance: 'E-Mail', characteristic: clubEmail },
     { id: 8, significance: 'Webseite', characteristic: 'www.tc-neudauberg.at' },
     { id: 9, significance: 'max_reservierungs_minuten', characteristic: clubCourts }
   ];
 
- 
+
 
   // Check if required fields are empty or null
   if (!clubMainTitle || !clubAddress || !clubEmail || !clubPhoneNumber || !clubCourts || clubStreet || clubHousenumber || clubZip) {
@@ -286,7 +286,7 @@ app.post('/saveclubsettings', checkAdminAccess, upload.single('clubImage'), asyn
       await db.pool.query(query, [data.characteristic, data.significance]);
     }
     console.log("All data saved successfully!");
-    
+
     res.redirect('/vereinverwaltung')
   } catch (error) {
     console.error("Error saving data:", error);
@@ -309,10 +309,11 @@ app.get('/vereinverwaltung', checkAdminAccess, async function (req, res) {
     const account = accountSettingsResult;
 
     // Render the 'clubsettings' view and pass the data
-    res.render('pages/06 AdminHauptseite/clubsettings.ejs', { club,
-       errorMessage: '',
-       account 
-      });
+    res.render('pages/06 AdminHauptseite/clubsettings.ejs', {
+      club,
+      errorMessage: '',
+      account
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -332,8 +333,8 @@ app.get('/reservierung', checkAdminAccess, async function (req, res) {
 
     const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
-   
-    res.render('pages/06 AdminHauptseite/reservation.ejs', { 
+
+    res.render('pages/06 AdminHauptseite/reservation.ejs', {
 
       account,
       club,
@@ -349,7 +350,7 @@ app.get('/reservierung', checkAdminAccess, async function (req, res) {
 //                             Benutzer hinzufügen
 ////////////////////////////////////////////////////////////////////////////
 app.get('/add', (req, res) => {
-  
+
   res.render('pages/06 AdminHauptseite/add.ejs', { errorMessage: null });
 });
 
@@ -370,7 +371,7 @@ app.post('/add', async (req, res) => {
     city: req.body.city,
     country: req.body.country,
     member_date: new Date(),
-  
+
   };
 
   // Check if password and confirm_password are not empty
@@ -404,7 +405,7 @@ app.post('/add', async (req, res) => {
     newUser.city,
     newUser.country,
     newUser.member_date,
-    
+
   ];
 
   try {
@@ -524,7 +525,7 @@ app.post('/delete/:user_id', async (req, res) => {
 
 app.get('/event', async function (req, res) {
   try {
-    
+
     res.render('pages/3.5 UserHauptseite/addEvent.ejs', { errorMessage: null });
 
   } catch (error) {
@@ -542,7 +543,7 @@ app.get('/event', async function (req, res) {
 
 app.get('/eventAdmin', async function (req, res) {
   try {
-    
+
     res.render('pages/06 AdminHauptseite/addEvent.ejs', { errorMessage: null });
 
   } catch (error) {
@@ -558,9 +559,9 @@ app.post('/eventAdmin', async (req, res) => {
     const { fullName, eventTitle, eventStart, eventEnd } = req.body;
 
     // Placeholders
-    const userId = 1; 
-    const courtId = 1; 
-    const reservationTypeId = 1; 
+    const userId = 1;
+    const courtId = 1;
+    const reservationTypeId = 1;
 
     // Insert into the court_reservation table
     await db.query(
@@ -584,7 +585,7 @@ app.post('/eventAdmin', async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 
 app.get('/user/:userId/main', async function (req, res) {
-  
+
   if (!req.session.logged_in || req.session.role_id !== 3) {
     return res.status(403).send('Zugriff verweigert');
   }
@@ -616,7 +617,7 @@ app.get('/user/:userId/main', async function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 
 
-  app.get('/accountdetails', async (req, res) => {
+app.get('/accountdetails', async (req, res) => {
   try {
     const userId = req.session.user_id;
 
@@ -625,9 +626,9 @@ app.get('/user/:userId/main', async function (req, res) {
 
     const accountSettingsResult = await db.pool.query('SELECT * FROM user WHERE user_id = ?', [userId]);
     const account = accountSettingsResult;
-    
-    
-    
+
+
+
     // Ensure data exists before attempting to use it
     if (accountSettingsResult.length === 0) {
       return res.status(404).send('User not found');
@@ -639,7 +640,7 @@ app.get('/user/:userId/main', async function (req, res) {
       errorMessage: '',
       additionalError: '',
     });
-    
+
   } catch (error) {
     console.error('Error fetching account details:', error);
     res.status(500).send('Internal Server Error');
@@ -652,10 +653,10 @@ app.get('/user/:userId/main', async function (req, res) {
 ////////////////////////////////////////////////////////////////////////////
 
 app.post('/saveaccountdetails/:user_id', async (req, res) => {
-  
-    
+
+
   try {
-    
+
     const {
       firstName,
       lastName,
@@ -668,8 +669,8 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
       userPassword
     } = req.body;
 
-    
-    
+
+
     const userData = {
       first_name: firstName,
       last_name: lastName,
@@ -682,35 +683,35 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
       password: userPassword,
       user_id: req.params.user_id
     };
-    
-    
-   
-    if (!firstName || !lastName || !userEmail ||!userPhoneNumber || !userAddress || !userHouseNumber || !userZip || !userCity || !userPassword) {
+
+
+
+    if (!firstName || !lastName || !userEmail || !userPhoneNumber || !userAddress || !userHouseNumber || !userZip || !userCity || !userPassword) {
       let errorMessageUser = 'Those fields cannot be empty!';
-      return res.status(400).send(errorMessageUser); 
+      return res.status(400).send(errorMessageUser);
     }
 
-    
+
     try {
-      
+
       const userQuery = `
         UPDATE user
         SET first_name = ?, last_name = ?, email_address = ?, telephone_number = ?,
             street = ?, house_number = ?, zip_code = ?, city = ?, password = ?
         WHERE user_id = ?;
       `;
-      
-      await db.pool.query(userQuery, 
-        [userData.first_name, 
-         userData.last_name, 
-         userData.email_address, 
-         userData.telephone_number, 
-         userData.street,
-         userData.house_number,
-         userData.zip_code,
-         userData.city,
-         userData.password,
-         userData.user_id
+
+      await db.pool.query(userQuery,
+        [userData.first_name,
+        userData.last_name,
+        userData.email_address,
+        userData.telephone_number,
+        userData.street,
+        userData.house_number,
+        userData.zip_code,
+        userData.city,
+        userData.password,
+        userData.user_id
         ])
         .catch(connectionError => {
           console.error("Error connecting to database:", connectionError);
@@ -722,13 +723,13 @@ app.post('/saveaccountdetails/:user_id', async (req, res) => {
         });
 
       console.log("All data saved successfully!");
-      res.redirect("/accountdetails"); 
+      res.redirect("/accountdetails");
 
     } catch (error) {
       console.error("Unexpected error saving data:", error);
       res.status(500).send("Internal Server Error");
     }
-  } catch (error) {  
+  } catch (error) {
     console.error("Error saving data:", error);
     res.status(500).send("Internal Server Error");
   }
@@ -774,15 +775,16 @@ app.get('/clubcontact', async function (req, res) {
     const account = accountSettingsResult;
 
     // Render the 'clubsettings' view and pass the data
-    res.render('pages/3.5 UserHauptseite/clubcontact.ejs', { club,
-       errorMessage: '',
-       account 
-      });
+    res.render('pages/3.5 UserHauptseite/clubcontact.ejs', {
+      club,
+      errorMessage: '',
+      account
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
   }
-  if (app.get('/edit/:logout')) 
+  if (app.get('/edit/:logout'))
     conn.end();
 });
 app.get('/edit/:logout', async (req, res) => {
@@ -812,142 +814,142 @@ app.post('/register', bodyParser.urlencoded({ extended: false }), async (req, re
 
   // Datenbankverbindung
   try {
-  conn = await db.pool.getConnection();
+    conn = await db.pool.getConnection();
 
-  let email_address = req.body.email_address.trim();
-  let first_name = req.body.first_name.trim();
-  let last_name = req.body.last_name.trim();
-  let password = req.body.password.trim();
-  let password2 = req.body.password1.trim();
-  let telephone_number = req.body.telephone_number.trim();
-  let street = req.body.street.trim();
-  let house_number = req.body.house_number.trim();
-  let zip_code = req.body.zip_code.trim();
-  let city = req.body.city.trim();
-  let country = req.body.country.trim();
+    let email_address = req.body.email_address.trim();
+    let first_name = req.body.first_name.trim();
+    let last_name = req.body.last_name.trim();
+    let password = req.body.password.trim();
+    let password2 = req.body.password1.trim();
+    let telephone_number = req.body.telephone_number.trim();
+    let street = req.body.street.trim();
+    let house_number = req.body.house_number.trim();
+    let zip_code = req.body.zip_code.trim();
+    let city = req.body.city.trim();
+    let country = req.body.country.trim();
 
-  console.log(first_name);
+    console.log(first_name);
 
-  if(password != password2) {
-    return res.render('pages/register.ejs', { errorMessage: 'Achtung bitte das Password richtig bestätigen'});
-  }
+    if (password != password2) {
+      return res.render('pages/register.ejs', { errorMessage: 'Achtung bitte das Password richtig bestätigen' });
+    }
 
-  let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
+    let userdata = await conn.query(`SELECT * FROM user WHERE email_address = '${email_address}'`);
 
-  if(userdata.length != 0) {
-    if (email_address.length > 0) {
-      if (userdata[0].email_address == email_address)  {
-        return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits'});
-      }
-      else if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))){
-        return res.render('pages/register.ejs', { errorMessage: 'Ihre Validierung passt nicht'});
-      }
-      else {
-        return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler'});
+    if (userdata.length != 0) {
+      if (email_address.length > 0) {
+        if (userdata[0].email_address == email_address) {
+          return res.render('pages/register.ejs', { errorMessage: 'Diese Email Existiert bereits' });
+        }
+        else if (!(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/.test(email_address))) {
+          return res.render('pages/register.ejs', { errorMessage: 'Ihre Validierung passt nicht' });
+        }
+        else {
+          return res.render('pages/register.ejs', { errorMessage: 'Irgendein anderer Fehler' });
+        }
       }
     }
-  }
-   
-   console.log(1);
-   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(first_name)) && first_name.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Vornamen eingeben'});
-     return;
-   }
-   console.log(2);
-   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(last_name)) && last_name.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Nachnamen eingeben'});
-     return;
-   }
-   console.log(3);
-   if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) && password.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Passwort eingeben'});
-     return;
-   }
-   console.log(4);
-   if (!(/^[0-9]{2,30}$/.test(telephone_number)) && telephone_number.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Telefonnummer eingeben'});
-     return;
-   }
-   console.log(5);
-   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(street)) && street.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Straße eingeben'});
-     return;
-   }
-   console.log(6);
-   if (!(/^[0-9]{1,6}$/.test(house_number)) && house_number.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Hausnummer eingeben'});
-     return;
-   }
-   console.log(7);
-   if (!(/^[0-9]{2,30}$/.test(zip_code)) && zip_code.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Postleitzahl eingeben'});
-     return;
-   }
-   console.log(8);
-   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(city)) && city.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Stadt eingeben'});
-     return;
-   }
-   console.log(9);
-   if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(country)) && country.length > 0) {
-     res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Land eingeben'});
 
-     return;
-   }
+    console.log(1);
+    if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(first_name)) && first_name.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Vornamen eingeben' });
+      return;
+    }
+    console.log(2);
+    if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(last_name)) && last_name.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Nachnamen eingeben' });
+      return;
+    }
+    console.log(3);
+    if (!(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password)) && password.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Passwort eingeben' });
+      return;
+    }
+    console.log(4);
+    if (!(/^[0-9]{2,30}$/.test(telephone_number)) && telephone_number.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Telefonnummer eingeben' });
+      return;
+    }
+    console.log(5);
+    if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(street)) && street.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Straße eingeben' });
+      return;
+    }
+    console.log(6);
+    if (!(/^[0-9]{1,6}$/.test(house_number)) && house_number.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Hausnummer eingeben' });
+      return;
+    }
+    console.log(7);
+    if (!(/^[0-9]{2,30}$/.test(zip_code)) && zip_code.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Postleitzahl eingeben' });
+      return;
+    }
+    console.log(8);
+    if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(city)) && city.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Stadt eingeben' });
+      return;
+    }
+    console.log(9);
+    if (!(/^[a-zäöüßA-ZÄÖÜ]{2,30}$/.test(country)) && country.length > 0) {
+      res.render('pages/register.ejs', { errorMessage: 'Sie müssen einen gültigen Land eingeben' });
 
-   // insert data in die Datenbank
-  let lastID;
-  try {
+      return;
+    }
+
+    // insert data in die Datenbank
+    let lastID;
+    try {
       const lastIDResult = await db.pool.query("SELECT IFNULL(MAX(user_id), 0) AS lastuserid FROM user");
       lastID = lastIDResult[0].lastuserid;
-  } catch (error) {
+    } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Problem mit den Einfügen der Daten ist Aufgetreten.' });
       return; // Return early in case of an error.
-  }
+    }
 
-  function getFormattedDate() {
-    var jetzt = new Date();
-  
-    var jahr = jetzt.getFullYear(); // Jahr als vierstellige Zahl
-    var monat = jetzt.getMonth() + 1; // Monat als Zahl (0 = Januar, 11 = Dezember)
-    var tag = jetzt.getDate(); // Tag des Monats
-  
-    // Füge eine führende Null hinzu, wenn Monat oder Tag kleiner als 10 sind
-    monat = monat < 10 ? '0' + monat : monat;
-    tag = tag < 10 ? '0' + tag : tag;
-  
-    return `${jahr}-${monat}-${tag}`;
-  }
-  
-  console.log(getFormattedDate()); // Gibt das Datum im Format "YYYY-MM-DD" aus
-  
+    function getFormattedDate() {
+      var jetzt = new Date();
 
- let currentDate = getFormattedDate();
+      var jahr = jetzt.getFullYear(); // Jahr als vierstellige Zahl
+      var monat = jetzt.getMonth() + 1; // Monat als Zahl (0 = Januar, 11 = Dezember)
+      var tag = jetzt.getDate(); // Tag des Monats
 
-  // Increment the lastID to get the new BenutzerID
-  const new_user_id = lastID + 1;
-  const values = [new_user_id, email_address, first_name, last_name, password, 0, null, currentDate, telephone_number, 3, street, house_number, zip_code, city, country];
-  try {
+      // Füge eine führende Null hinzu, wenn Monat oder Tag kleiner als 10 sind
+      monat = monat < 10 ? '0' + monat : monat;
+      tag = tag < 10 ? '0' + tag : tag;
+
+      return `${jahr}-${monat}-${tag}`;
+    }
+
+    console.log(getFormattedDate()); // Gibt das Datum im Format "YYYY-MM-DD" aus
+
+
+    let currentDate = getFormattedDate();
+
+    // Increment the lastID to get the new BenutzerID
+    const new_user_id = lastID + 1;
+    const values = [new_user_id, email_address, first_name, last_name, password, 0, null, currentDate, telephone_number, 3, street, house_number, zip_code, city, country];
+    try {
       const result = await db.pool.query(
-          `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
+        `INSERT INTO user (\`user_id\`, \`email_address\`, \`first_name\`, \`last_name\`, \`password\`, \`count_of_false_logins\`,  \`blocked_date\`, \`member_date\`,
                                  \`telephone_number\`, \`role_id\`, \`street\`,
                                  \`house_number\`, \`zip_code\`, \`city\`, \`country\`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-          values
+        values
       );
-      res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.'});
-      return; 
-  } catch (error) {
+      res.render('pages/register.ejs', { successMessage: 'Gratuliere Sie haben sich erfolgreich Registriert.' });
+      return;
+    } catch (error) {
       console.error('Error:', error);
       res.status(500).json({ error: 'Daten sind nicht hinzugefügt worden.' });
-  } 
+    }
 
-} catch (error) {
-  console.error(error);
-  res.status(500).send('Server Error');
-} finally {
-  if (conn) conn.end();
-}
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  } finally {
+    if (conn) conn.end();
+  }
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -961,7 +963,7 @@ app.get('/login', function (req, res) {
 app.post('/login', async function (req, res) {
   const user_email_address = req.body.email_address;
   const user_password = req.body.password;
-  
+
 
   if (!user_email_address || !user_password) {
     return res.render('pages/login', { errorMessage: 'Please fill in all fields!' });
@@ -971,7 +973,7 @@ app.post('/login', async function (req, res) {
     // Fetch user data based on the email address
     const user = await db.pool.query('SELECT * FROM user WHERE email_address = ?', [user_email_address]);
 
-    
+
     console.log(user);
     console.log(user[0].blocked_date);
 
@@ -1005,7 +1007,7 @@ app.post('/login', async function (req, res) {
 
 
 app.get('/logout', function (req, res) {
-  
+
   req.session.destroy(function (err) {
     if (err) {
       console.error('Error during session destruction:', err);
@@ -1029,10 +1031,6 @@ app.get('/user/:userid', requireAuth, function (req, res) {
     res.render('pages/user');
   };
 });
-
-////////////////////////////////////////////////////////////////////////////
-//                             R O L E 
-////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////
 //                             User
@@ -1075,20 +1073,6 @@ app.get('/reservation_type', function (req, res) {
   });
 });
 
-////////////////////////////////////////////////////////////////////////////
-//                             I M P R E S S U M 
-////////////////////////////////////////////////////////////////////////////
-// TODO: impressum page
-// Fehlt Seite
-
-////////////////////////////////////////////////////////////////////////////
-//                             D S G V O 
-////////////////////////////////////////////////////////////////////////////
-// TODO: datenschutzerklärung page
-// Fehlt Seite
-
-
-
 
 
 // Globale Fehlerbehandlung
@@ -1098,7 +1082,7 @@ app.use((err, req, res, next) => {
   console.log(err.code);
 
   res.status(500).json({
-    message: err.message //"UUUPS! Da ist richtig was falsch gelaufen!"
+    message: err.message
   });
 });
 

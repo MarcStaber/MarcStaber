@@ -66,6 +66,9 @@ Sie können den Server mit [Strg]+[C] (oder in macOS mit [cmd]+[C]) beenden.
 Nach dem Starten des Servers laden Sie die Webseite mit http://localhost:3000
 
 
+2.6 Kontrollseite öffnen
+-------------------
+Nach dem Starten des Servers laden Sie die Kontrollseite mit http://localhost:3000/controlpage
 
 
 
@@ -102,4 +105,3 @@ NPM in VSCode
 - npm install mariadb
 - npm install dotenv
 - npm install ejs
-
